@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "trp",
+  "version": "${version}",
+  "name": "Tardis Refined Peripherals",
+  "description": "Bringing ComputerCraft functionality to Tardis Refined.",
+  "authors": [
+    "Me!"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/FabricMC/fabric-example-mod"
+  },
+  "license": "MIT",
+  "icon": "assets/trp/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "leaf.trp.fabric.TRPModFabric"
+    ]
+  },
+  "mixins": [
+    "trp.mixins.json",
+    "trp-common.mixins.json"
+  ],
+  "depends": {
+    "fabric": "*",
+    "minecraft": ">=1.19",
+    "architectury": ">=5.14.84"
+  }
+}
