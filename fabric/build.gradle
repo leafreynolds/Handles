@@ -24,13 +24,20 @@ dependencies {
     modApi "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}"
 
     //dependencies
-    modImplementation "curse.maven:cc-restitched-462672:3908334"
+    modImplementation "com.github.cc-tweaked:cc-restitched:${project.ccr_version}"
     modCompileOnly "mezz.jei:jei-$minecraft_version-common-api:$jeiVersion"
     modCompileOnly "mezz.jei:jei-$minecraft_version-fabric-api:$jeiVersion"
     modRuntimeOnly "mezz.jei:jei-${minecraft_version}-fabric:$jeiVersion"
     modImplementation "vazkii.patchouli:Patchouli:${minecraft_version}-${patchouliVersion}-FABRIC"
 
     modImplementation "maven.modrinth:tardis-refined:${tardis_refined_id}-fabric"
+
+    //tardis refined dependencies
+    modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-base:${cardinal_version}"
+    modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-world:${cardinal_version}"
+    include "dev.onyxstudios.cardinal-components-api:cardinal-components-base:${cardinal_version}"
+    include "dev.onyxstudios.cardinal-components-api:cardinal-components-world:${cardinal_version}"
+
 
     // Remove the next line if you don't want to depend on the API
     modApi "dev.architectury:architectury-fabric:${architectury_version}"

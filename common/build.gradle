@@ -14,7 +14,11 @@ dependencies {
     modApi "dev.architectury:architectury:${rootProject.architectury_version}"
 
     modCompileOnlyApi "net.minecraftforge:forgeconfigapiport-fabric:${rootProject.forge_config_api_port_version}"
-    modImplementation "com.github.cc-tweaked:cc-restitched:${project.cc_version}"
+
+    //Yes, it is weird that we implement these fabric mods in _common_
+    //Just means we have to be careful not to access non-common stuff when in the TRP common module
+    modImplementation "com.github.cc-tweaked:cc-restitched:${project.ccr_version}"
+    modImplementation "maven.modrinth:tardis-refined:${tardis_refined_id}-fabric"
 
     //modCompileOnlyApi ("blank:imm_ptl_core:2.3.1")
     //modCompileOnlyApi ("blank:immersive-portals:2.3.2-mc1.19.2-fabric")

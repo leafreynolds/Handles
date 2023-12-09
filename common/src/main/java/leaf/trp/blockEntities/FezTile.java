@@ -2,7 +2,7 @@ package leaf.trp.blockEntities;
 
 import dan200.computercraft.api.peripheral.IPeripheral;
 import leaf.trp.peripherals.IPeripheralTileTRP;
-import leaf.trp.peripherals.refined.RefinedPeripheral;
+import leaf.trp.peripherals.RefinedPeripheral;
 import leaf.trp.registries.BlockEntityRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
