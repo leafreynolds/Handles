@@ -14,6 +14,7 @@ dependencies {
     modApi "dev.architectury:architectury:${rootProject.architectury_version}"
 
     modCompileOnlyApi "net.minecraftforge:forgeconfigapiport-fabric:${rootProject.forge_config_api_port_version}"
+    modImplementation "com.github.cc-tweaked:cc-restitched:${project.cc_version}"
 
     //modCompileOnlyApi ("blank:imm_ptl_core:2.3.1")
     //modCompileOnlyApi ("blank:immersive-portals:2.3.2-mc1.19.2-fabric")
