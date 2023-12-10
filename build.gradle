@@ -87,9 +87,10 @@ allprojects {
             url = "https://maven.terraformersmc.com/"
         }
 
-        flatDir {
-            dirs '../modlibs'
-        }
+        //Ideally we don't want to embed jar dependencies in the project.
+        //flatDir {
+        //    dirs '../modlibs'
+        //}
 
     }
 

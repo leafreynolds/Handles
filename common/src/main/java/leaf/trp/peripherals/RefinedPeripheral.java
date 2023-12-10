@@ -1,21 +1,35 @@
 package leaf.trp.peripherals;
 
+import dan200.computercraft.api.lua.IArguments;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.LuaFunction;
 import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import leaf.trp.blockEntities.FezTile;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import whocraft.tardis_refined.common.tardis.ExteriorShell;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.manager.TardisControlManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisFlightEventManager;
+import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
+import whocraft.tardis_refined.common.util.DimensionUtil;
+import whocraft.tardis_refined.patterns.BasePattern;
+import whocraft.tardis_refined.patterns.ShellPattern;
+import whocraft.tardis_refined.patterns.ShellPatterns;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -67,6 +81,7 @@ public class RefinedPeripheral implements IPeripheral
 		}
 	}
 
+	//region Flight - isInFlight/getFlightPercent/canEndFlight/getIsLanding
 	@LuaFunction
 	public final boolean isInFlight() throws LuaException
 	{
@@ -118,6 +133,243 @@ public class RefinedPeripheral implements IPeripheral
 	}
 
 	@LuaFunction
+	public final MethodResult getIsLanding() throws LuaException
+	{
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
+		if (optional.isPresent())
+		{
+			final TardisLevelOperator tardisLevelOperator = optional.get();
+			final TardisControlManager controlManager = tardisLevelOperator.getControlManager();
+			return MethodResult.of(controlManager.isLanding());
+		}
+		else
+		{
+			throw new LuaException("No Tardis Found");
+		}
+	}
+	//endregion
+
+	private static ServerLevel getServerLevel(TardisLevelOperator tardisLevelOperator, String dim)
+	{
+		var filteredLevels = tardisLevelOperator.getLevel().getServer().getAllLevels();
+
+		for (ServerLevel level : filteredLevels)
+		{
+			final ResourceKey<Level> dimension = level.dimension();
+			final ResourceLocation location = dimension.location();
+			if (DimensionUtil.isAllowedDimension(dimension) && (location.toString().equals(dim) || location.getPath().equals(dim)))
+			{
+				return level;
+			}
+		}
+
+		return null;
+	}
+
+	//region Target Location - Get/Set
+	@LuaFunction
+	public final MethodResult getTargetLocation() throws LuaException
+	{
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
+		if (optional.isPresent())
+		{
+			final TardisLevelOperator tardisLevelOperator = optional.get();
+
+			final TardisNavLocation targetLocation = tardisLevelOperator.getControlManager().getTargetLocation();
+			return MethodResult.of(
+					targetLocation.getPosition().getX(),
+					targetLocation.getPosition().getY(),
+					targetLocation.getPosition().getZ(),
+					targetLocation.getDirection().toString(),
+					targetLocation.getDimensionKey().location().toString()
+			);
+		}
+		else
+		{
+			throw new LuaException("No Tardis Found");
+		}
+	}
+
+	@LuaFunction
+	public final MethodResult setTargetLocation(IArguments args) throws LuaException
+	{
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
+		if (optional.isPresent())
+		{
+			final TardisLevelOperator tardisLevelOperator = optional.get();
+
+			int x = args.getInt(0);
+			int y = args.getInt(1);
+			int z = args.getInt(2);
+			Direction direction = Direction.byName(args.getString(3));
+			final ServerLevel targetDimension = getServerLevel(tardisLevelOperator, args.getString(4));
+
+			final TardisControlManager controlManager = tardisLevelOperator.getControlManager();
+			TardisNavLocation targetLocation =
+					new TardisNavLocation(
+							new BlockPos(x, y, z),
+							direction,
+							targetDimension != null
+							? targetDimension
+							: controlManager.getTargetLocation().getLevel()
+					);
+
+			controlManager.setTargetLocation(targetLocation);
+
+			return MethodResult.of(
+					targetLocation.getPosition().getX(),
+					targetLocation.getPosition().getY(),
+					targetLocation.getPosition().getZ(),
+					targetLocation.getDirection().toString(),
+					targetLocation.getDimensionKey().location().toString()
+			);
+		}
+		else
+		{
+			throw new LuaException("No Tardis Found");
+		}
+	}
+	//endregion
+
+	//region Target Position - Get/Set
+	@LuaFunction
+	public final MethodResult getTargetPosition() throws LuaException
+	{
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
+		if (optional.isPresent())
+		{
+			final TardisLevelOperator tardisLevelOperator = optional.get();
+
+			final TardisNavLocation targetLocation = tardisLevelOperator.getControlManager().getTargetLocation();
+			return MethodResult.of(
+					targetLocation.getPosition().getX(),
+					targetLocation.getPosition().getY(),
+					targetLocation.getPosition().getZ()
+			);
+		}
+		else
+		{
+			throw new LuaException("No Tardis Found");
+		}
+	}
+
+	@LuaFunction
+	public final MethodResult setTargetPosition(IArguments args) throws LuaException
+	{
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
+		if (optional.isPresent())
+		{
+			final TardisLevelOperator tardisLevelOperator = optional.get();
+
+			int x = args.getInt(0);
+			int y = args.getInt(1);
+			int z = args.getInt(2);
+			tardisLevelOperator.getControlManager().setTargetPosition(new BlockPos(x, y, z));
+
+			return getTargetPosition();
+		}
+		else
+		{
+			throw new LuaException("No Tardis Found");
+		}
+	}
+	//endregion
+
+	//region Target Direction - Get/Set
+	//  "north"
+	//  "south"
+	//  "west"
+	//  "east"
+	@LuaFunction
+	public final MethodResult getTargetDirection() throws LuaException
+	{
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
+		if (optional.isPresent())
+		{
+			final TardisLevelOperator tardisLevelOperator = optional.get();
+			final TardisNavLocation lastKnownLocation = tardisLevelOperator.getExteriorManager().getLastKnownLocation();
+			return MethodResult.of(lastKnownLocation.getDirection().toString());
+		}
+		else
+		{
+			throw new LuaException("No Tardis Found");
+		}
+	}
+
+	//  "north"
+	//  "south"
+	//  "west"
+	//  "east"
+	@LuaFunction
+	public final MethodResult setTargetDirection(String dir) throws LuaException
+	{
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
+		if (optional.isPresent())
+		{
+			final TardisLevelOperator tardisLevelOperator = optional.get();
+			final TardisNavLocation lastKnownLocation = tardisLevelOperator.getExteriorManager().getLastKnownLocation();
+
+			Direction direction = Direction.byName(dir);
+			if (direction != null)//todo - check only for valid directions, no up or down
+			{
+				tardisLevelOperator.getControlManager().getTargetLocation().setDirection(direction);
+				return MethodResult.of(dir);
+			}
+			else
+			{
+				return MethodResult.of();
+			}
+		}
+		else
+		{
+			throw new LuaException("No Tardis Found");
+		}
+	}
+	//endregion
+
+	//region Target Dimension - Get/Set
+	@LuaFunction
+	public final MethodResult getTargetDimension() throws LuaException
+	{
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
+		if (optional.isPresent())
+		{
+			final TardisLevelOperator tardisLevelOperator = optional.get();
+			return MethodResult.of(tardisLevelOperator.getControlManager().getTargetLocation().getDimensionKey().location().toString());
+		}
+		else
+		{
+			throw new LuaException("No Tardis Found");
+		}
+	}
+
+	@LuaFunction
+	public final MethodResult setTargetDimension(String dimensionName) throws LuaException
+	{
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
+		if (optional.isPresent())
+		{
+			final TardisLevelOperator tardisLevelOperator = optional.get();
+			final ServerLevel targetDimension = getServerLevel(tardisLevelOperator, dimensionName);
+
+			if (targetDimension == null)
+			{
+				throw new LuaException("Dimension not found");
+			}
+
+			tardisLevelOperator.getControlManager().getTargetLocation().setLevel(targetDimension);
+
+			return getTargetLocation();
+		}
+		else
+		{
+			throw new LuaException("No Tardis Found");
+		}
+	}
+	//endregion
+
+	//region LastKnownLocation - (x,y,z,direction,dimension) / Dimension / Direction
+	@LuaFunction
 	public final MethodResult getLastKnownLocation() throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
@@ -129,7 +381,9 @@ public class RefinedPeripheral implements IPeripheral
 			return MethodResult.of(
 					lastKnownLocation.getPosition().getX(),
 					lastKnownLocation.getPosition().getY(),
-					lastKnownLocation.getPosition().getZ()
+					lastKnownLocation.getPosition().getZ(),
+					lastKnownLocation.getDirection().toString(),
+					lastKnownLocation.getDimensionKey().location().toString()
 			);
 		}
 		else
@@ -138,6 +392,44 @@ public class RefinedPeripheral implements IPeripheral
 		}
 	}
 
+	@LuaFunction
+	public final MethodResult getLastKnownDimension() throws LuaException
+	{
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
+		if (optional.isPresent())
+		{
+			final TardisLevelOperator tardisLevelOperator = optional.get();
+			final TardisNavLocation lastKnownLocation = tardisLevelOperator.getExteriorManager().getLastKnownLocation();
+			return MethodResult.of(
+					lastKnownLocation.getDimensionKey().location().toString()
+			);
+		}
+		else
+		{
+			throw new LuaException("No Tardis Found");
+		}
+	}
+
+	@LuaFunction
+	public final MethodResult getLastKnownDirection() throws LuaException
+	{
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
+		if (optional.isPresent())
+		{
+			final TardisLevelOperator tardisLevelOperator = optional.get();
+			final TardisNavLocation lastKnownLocation = tardisLevelOperator.getExteriorManager().getLastKnownLocation();
+			return MethodResult.of(
+					lastKnownLocation.getDirection().toString()
+			);
+		}
+		else
+		{
+			throw new LuaException("No Tardis Found");
+		}
+	}
+	//endregion
+
+	//region FastReturnLocation - Get
 	/* todo uncomment when available
 	@LuaFunction
 	public final MethodResult getFastReturnLocation() throws LuaException
@@ -167,75 +459,45 @@ public class RefinedPeripheral implements IPeripheral
 			throw new LuaException("No Tardis Found");
 		}
 	}*/
+	//endregion
 
+	//region Dimensions - gets list of dimensions that the tardis is allowed to travel to
 	@LuaFunction
-	public final MethodResult getDimension() throws LuaException
+	public final MethodResult getDimensions() throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
 		if (optional.isPresent())
 		{
 			final TardisLevelOperator tardisLevelOperator = optional.get();
-			final TardisNavLocation lastKnownLocation = tardisLevelOperator.getExteriorManager().getLastKnownLocation();
-			return MethodResult.of(
-					lastKnownLocation.getDimensionKey().location().toString()
-			);
-		}
-		else
-		{
-			throw new LuaException("No Tardis Found");
-		}
-	}
-
-	@LuaFunction
-	public final MethodResult getDirection() throws LuaException
-	{
-		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
-		if (optional.isPresent())
-		{
-			final TardisLevelOperator tardisLevelOperator = optional.get();
-			final TardisNavLocation lastKnownLocation = tardisLevelOperator.getExteriorManager().getLastKnownLocation();
-			return MethodResult.of(
-					lastKnownLocation.getDirection().toString()
-			);
-		}
-		else
-		{
-			throw new LuaException("No Tardis Found");
-		}
-	}
-
-	//  "down"
-	//  "up"
-	//  "north"
-	//  "south"
-	//  "west"
-	//  "east"
-	@LuaFunction
-	public final MethodResult setDirection(String dir) throws LuaException
-	{
-		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
-		if (optional.isPresent())
-		{
-			final TardisLevelOperator tardisLevelOperator = optional.get();
-			final TardisNavLocation lastKnownLocation = tardisLevelOperator.getExteriorManager().getLastKnownLocation();
-
-			Direction direction = Direction.byName(dir);
-			if (direction != null)
+			final MinecraftServer server = tardisLevelOperator.getLevel().getServer();
+			if (server == null)
 			{
-				tardisLevelOperator.getControlManager().getTargetLocation().setDirection(direction);
-				return MethodResult.of(dir);
+				//Shouldn't ever actually happen, just adding a comment
+				throw new LuaException("Server Null Exception");
 			}
-			else
+
+			var filteredLevels = server.getAllLevels();
+			var filteredDimensions = new ArrayList<String>();
+
+			for (ServerLevel level : filteredLevels)
 			{
-				return MethodResult.of();
+				final ResourceKey<Level> dimension = level.dimension();
+				if (DimensionUtil.isAllowedDimension(dimension))
+				{
+					filteredDimensions.add(dimension.location().toString());
+				}
 			}
+
+			return MethodResult.of(filteredDimensions.toArray());
 		}
 		else
 		{
 			throw new LuaException("No Tardis Found");
 		}
 	}
+	//endregion
 
+	//region Doors - getInternalDoorOpen, setDoorClosed, getDoorLocked, setDoorLocked
 	@LuaFunction
 	public final MethodResult getInternalDoorOpen() throws LuaException
 	{
@@ -310,7 +572,9 @@ public class RefinedPeripheral implements IPeripheral
 			throw new LuaException("No Tardis Found");
 		}
 	}
+	//endregion
 
+	//region Cooldown - getIsOnCooldown, getIsCrashing, getCooldownTicks, getCooldownDuration
 	@LuaFunction
 	public final MethodResult getIsOnCooldown() throws LuaException
 	{
@@ -375,6 +639,7 @@ public class RefinedPeripheral implements IPeripheral
 			throw new LuaException("No Tardis Found");
 		}
 	}*/
+	//endregion
 
 	@LuaFunction
 	public final MethodResult getCanUseControls() throws LuaException
@@ -392,6 +657,7 @@ public class RefinedPeripheral implements IPeripheral
 		}
 	}
 
+	//region AutoLand
 	@LuaFunction
 	public final MethodResult getIsAutoLandSet() throws LuaException
 	{
@@ -407,23 +673,25 @@ public class RefinedPeripheral implements IPeripheral
 			throw new LuaException("No Tardis Found");
 		}
 	}
-
 	@LuaFunction
-	public final MethodResult getIsLanding() throws LuaException
+	public final MethodResult setIsAutoLandSet(boolean autoLand) throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
 		if (optional.isPresent())
 		{
 			final TardisLevelOperator tardisLevelOperator = optional.get();
 			final TardisControlManager controlManager = tardisLevelOperator.getControlManager();
-			return MethodResult.of(controlManager.isLanding());
+			controlManager.setAutoLand(autoLand);
+			return MethodResult.of(controlManager.isAutoLandSet());
 		}
 		else
 		{
 			throw new LuaException("No Tardis Found");
 		}
 	}
+	//endregion
 
+	//region Exterior Theme - getExteriorTheme/setShellTheme/getShellThemes/getShellPatterns/setShellPattern
 	@LuaFunction
 	public final MethodResult getExteriorTheme() throws LuaException
 	{
@@ -432,11 +700,69 @@ public class RefinedPeripheral implements IPeripheral
 		{
 			final TardisLevelOperator tardisLevelOperator = optional.get();
 			final TardisControlManager controlManager = tardisLevelOperator.getControlManager();
-			return MethodResult.of(controlManager.getCurrentExteriorTheme().getDisplayName().plainCopy().toString());
+			//id is probably more useful than the translated key, but maybe we just display it separately.
+			//String translated = I18n.get(controlManager.getCurrentExteriorTheme().getSerializedName());
+			return MethodResult.of(controlManager.getCurrentExteriorTheme().name());
 		}
 		else
 		{
 			throw new LuaException("No Tardis Found");
 		}
 	}
+
+	@LuaFunction
+	public final MethodResult setShellTheme(String shellTheme) throws LuaException
+	{
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
+		if (optional.isPresent())
+		{
+			final TardisLevelOperator tardisLevelOperator = optional.get();
+			final ShellTheme theme = ShellTheme.valueOf(shellTheme);
+			tardisLevelOperator.setShellTheme(theme);
+			return MethodResult.of(theme.name());
+		}
+		else
+		{
+			throw new LuaException("No Tardis Found");
+		}
+	}
+
+	@LuaFunction
+	public final MethodResult getShellThemes() throws LuaException
+	{
+		return MethodResult.of(Arrays.stream(ShellTheme.values()).map(ShellTheme::name).toArray());
+	}
+
+	@LuaFunction
+	public final MethodResult getShellThemePatterns(String themeName) throws LuaException
+	{
+		final ShellTheme theme = ShellTheme.valueOf(themeName);
+		var patterns = ShellPatterns.getPatternsForTheme(theme);
+		var ids = patterns.stream().map(shellPattern -> shellPattern.id().toString()).toArray();
+		return MethodResult.of(ids);
+	}
+
+	@LuaFunction
+	public final MethodResult setShellPattern(String shellTheme, String shellPattern) throws LuaException
+	{
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
+		if (optional.isPresent())
+		{
+			final TardisLevelOperator tardisLevelOperator = optional.get();
+			final TardisControlManager controlManager = tardisLevelOperator.getControlManager();
+
+			final ShellTheme theme = ShellTheme.valueOf(shellTheme);
+			final var pattern = ShellPatterns.getPatternOrDefault(theme, new ResourceLocation(shellPattern));
+
+			tardisLevelOperator.setShellTheme(theme);
+			tardisLevelOperator.getExteriorManager().setShellPattern(pattern);
+
+			return MethodResult.of(theme.name(), pattern.name());
+		}
+		else
+		{
+			throw new LuaException("No Tardis Found");
+		}
+	}
+	//endregion
 }

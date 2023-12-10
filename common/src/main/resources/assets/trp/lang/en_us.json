@@ -1,3 +1,5 @@
 {
-  "item.trp.example_item": "Example Item"
+  "item.trp.fez": "Fez",
+  "block.trp.fez": "Fez",
+  "itemGroup.trp.main_tab": "Tardis Peripherals"
 }

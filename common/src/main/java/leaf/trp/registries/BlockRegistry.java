@@ -20,7 +20,6 @@ public class BlockRegistry
 
 	public static final RegistrySupplier<FezBlock> FEZ = register("fez", () -> new FezBlock(BlockBehaviour.Properties.of(Material.BAMBOO).noOcclusion().strength(1000, 1000).sound(SoundType.BAMBOO)), true, true);
 
-
 	private static <T extends Block> RegistrySupplier<T> register(String id, Supplier<T> blockSupplier, boolean addToTab, boolean registerItem)
 	{
 		RegistrySupplier<T> registryObject = BLOCKS.register(id, blockSupplier);

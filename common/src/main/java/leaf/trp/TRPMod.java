@@ -2,7 +2,6 @@ package leaf.trp;
 
 import com.google.common.base.Suppliers;
 import dev.architectury.registry.registries.Registries;
-import leaf.trp.functions.FunctionsHandler;
 import leaf.trp.registries.BlockEntityRegistry;
 import leaf.trp.registries.BlockRegistry;
 import leaf.trp.registries.ItemRegistry;
@@ -22,7 +21,6 @@ public class TRPMod
 		//then items
 		ItemRegistry.ITEMS.register();
 		BlockEntityRegistry.BLOCK_ENTITIES.register();
-		FunctionsHandler.init();
 
 		System.out.println(TRPExpectPlatform.getConfigDirectory().toAbsolutePath().normalize().toString());
 	}

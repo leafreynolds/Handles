@@ -1,104 +1,101 @@
 plugins {
-    id "com.github.johnrengelman.shadow" version "7.1.2"
+	id "com.github.johnrengelman.shadow" version "7.1.2"
 }
 
 architectury {
-    platformSetupLoomIde()
-    fabric()
+	platformSetupLoomIde()
+	fabric()
 }
 
 loom {
-    accessWidenerPath = project(":common").loom.accessWidenerPath
+	accessWidenerPath = project(":common").loom.accessWidenerPath
 }
 
 configurations {
-    common
-    shadowCommon // Don't use shadow from the shadow plugin since it *excludes* files.
-    compileClasspath.extendsFrom common
-    runtimeClasspath.extendsFrom common
-    developmentFabric.extendsFrom common
+	common
+	shadowCommon // Don't use shadow from the shadow plugin since it *excludes* files.
+	compileClasspath.extendsFrom common
+	runtimeClasspath.extendsFrom common
+	developmentFabric.extendsFrom common
 }
 
 dependencies {
-    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
-    modApi "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}"
+	modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+	modApi "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}"
 
-    //dependencies
-    modImplementation "com.github.cc-tweaked:cc-restitched:${project.ccr_version}"
-    modCompileOnly "mezz.jei:jei-$minecraft_version-common-api:$jeiVersion"
-    modCompileOnly "mezz.jei:jei-$minecraft_version-fabric-api:$jeiVersion"
-    modRuntimeOnly "mezz.jei:jei-${minecraft_version}-fabric:$jeiVersion"
-    modImplementation "vazkii.patchouli:Patchouli:${minecraft_version}-${patchouliVersion}-FABRIC"
+	//dependencies
+	modImplementation "com.github.cc-tweaked:cc-restitched:${project.ccr_version}"
+	modCompileOnly "mezz.jei:jei-$minecraft_version-common-api:$jeiVersion"
+	modCompileOnly "mezz.jei:jei-$minecraft_version-fabric-api:$jeiVersion"
+	modRuntimeOnly "mezz.jei:jei-${minecraft_version}-fabric:$jeiVersion"
+	modImplementation "vazkii.patchouli:Patchouli:${minecraft_version}-${patchouliVersion}-FABRIC"
 
-    modImplementation "maven.modrinth:tardis-refined:${tardis_refined_id}-fabric"
-
-    //tardis refined dependencies
-    modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-base:${cardinal_version}"
-    modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-world:${cardinal_version}"
-    include "dev.onyxstudios.cardinal-components-api:cardinal-components-base:${cardinal_version}"
-    include "dev.onyxstudios.cardinal-components-api:cardinal-components-world:${cardinal_version}"
+	modCompileOnly "curse.maven:jade-api-324717:${jade_api_id_forge}"
+	modRuntimeOnly "curse.maven:jade-324717:${jade_id_fabric}"
 
 
-    // Remove the next line if you don't want to depend on the API
-    modApi "dev.architectury:architectury-fabric:${architectury_version}"
+	//tardis refined
+	modImplementation "maven.modrinth:tardis-refined:${tardis_refined_id}-fabric"
+	//and dependencies - dev environment wont work without these
+	modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-base:${cardinal_version}"
+	modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-world:${cardinal_version}"
+	include "dev.onyxstudios.cardinal-components-api:cardinal-components-base:${cardinal_version}"
+	include "dev.onyxstudios.cardinal-components-api:cardinal-components-world:${cardinal_version}"
 
-    // Forge Config API Port
-    modApi "net.minecraftforge:forgeconfigapiport-fabric:${forge_config_api_port_version}"
-    include "net.minecraftforge:forgeconfigapiport-fabric:${forge_config_api_port_version}"
+	// Remove the next line if you don't want to depend on the API
+	modApi "dev.architectury:architectury-fabric:${architectury_version}"
 
+	// Forge Config API Port
+	modApi "net.minecraftforge:forgeconfigapiport-fabric:${forge_config_api_port_version}"
+	include "net.minecraftforge:forgeconfigapiport-fabric:${forge_config_api_port_version}"
 
-    // If working on Immersive Portals, change modCompileOnlyApi to modImplementation for the following two entries, this will enable Immersive Portals in Dev
-    //modCompileOnlyApi ("blank:imm_ptl_core:2.3.1")
-    //modCompileOnlyApi ("blank:immersive-portals:2.3.2-mc1.19.2-fabric")
-    //modCompileOnlyApi ("blank:q_misc_util:2.3.1")
-
-    common(project(path: ":common", configuration: "namedElements")) { transitive false }
-    shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
+	common(project(path: ":common", configuration: "namedElements")) { transitive false }
+	shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
 }
 
 processResources {
-    inputs.property "version", project.version
+	inputs.property "version", project.version
 
-    filesMatching("fabric.mod.json") {
-        expand "version": project.version
-    }
+	filesMatching("fabric.mod.json") {
+		expand "version": project.version
+	}
 }
 
 shadowJar {
-    exclude "architectury.common.json"
+	exclude "architectury.common.json"
 
-    configurations = [project.configurations.shadowCommon]
-    archiveClassifier = "dev-shadow"
+	configurations = [project.configurations.shadowCommon]
+	archiveClassifier = "dev-shadow"
 }
 
 remapJar {
-    injectAccessWidener = true
-    input.set shadowJar.archiveFile
-    dependsOn shadowJar
+	injectAccessWidener = true
+	input.set shadowJar.archiveFile
+	dependsOn shadowJar
 }
 
 sourcesJar {
-    def commonSources = project(":common").sourcesJar
-    dependsOn commonSources
-    from commonSources.archiveFile.map { zipTree(it) }
+	def commonSources = project(":common").sourcesJar
+	dependsOn commonSources
+	from commonSources.archiveFile.map { zipTree(it) }
 }
 
 components.java {
-    withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
-        skip()
-    }
+	withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
+		skip()
+	}
 }
 
 publishing {
-    publications {
-        mavenFabric(MavenPublication) {
-            artifactId = rootProject.archives_base_name + "-" + project.name
-            from components.java
-        }
-    }
+	publications {
+		mavenFabric(MavenPublication) {
+			artifactId = rootProject.archives_base_name + "-" + project.name
+			from components.java
+		}
+	}
 
-    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-    repositories {
-        // Add repositories to publish to here.
-    }
+	// See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
+	repositories {
+		// Add repositories to publish to here.
+	}
 }

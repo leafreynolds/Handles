@@ -20,7 +20,7 @@ public class TRPProviderCommon
 		{
 			return ((IPeripheralTileTRP) be).getPeripheral(side);
 		}
-		// do I need to differentiate between tardis from NTM team and tardis from TardisRefined?
+		// todo  - update this file when trying to differentiate between tardis from NTM team and tardis from TardisRefined
 		//if (Platform.isModLoaded("tardis"))
 		//{
 		//	IPeripheral newTardisModPeriph = NewTardisModPeripheralProvider.getPeripheral(world, pos, side);
