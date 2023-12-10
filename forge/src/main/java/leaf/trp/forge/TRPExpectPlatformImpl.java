@@ -7,10 +7,11 @@ import java.nio.file.Path;
 
 public class TRPExpectPlatformImpl
 {
-    /**
-     * This is our actual method to {@link TRPExpectPlatform#getConfigDirectory()}.
-     */
-    public static Path getConfigDirectory() {
-        return FMLPaths.CONFIGDIR.get();
-    }
+	/**
+	 * This is our actual method to {@link TRPExpectPlatform#getConfigDirectory()}.
+	 */
+	public static Path getConfigDirectory()
+	{
+		return FMLPaths.CONFIGDIR.get();
+	}
 }

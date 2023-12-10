@@ -7,7 +7,6 @@ import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import leaf.trp.blockEntities.FezTile;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceKey;
@@ -17,14 +16,11 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
-import whocraft.tardis_refined.common.tardis.ExteriorShell;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.manager.TardisControlManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisFlightEventManager;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.util.DimensionUtil;
-import whocraft.tardis_refined.patterns.BasePattern;
-import whocraft.tardis_refined.patterns.ShellPattern;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 
 import javax.annotation.Nonnull;
@@ -673,6 +669,7 @@ public class RefinedPeripheral implements IPeripheral
 			throw new LuaException("No Tardis Found");
 		}
 	}
+
 	@LuaFunction
 	public final MethodResult setIsAutoLandSet(boolean autoLand) throws LuaException
 	{

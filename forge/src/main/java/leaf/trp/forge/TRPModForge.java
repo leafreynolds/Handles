@@ -9,10 +9,11 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 @Mod(TRPMod.MOD_ID)
 public class TRPModForge
 {
-    public TRPModForge() {
-        // Submit our event bus to let architectury register our content on the right time
-        EventBuses.registerModEventBus(TRPMod.MOD_ID, FMLJavaModLoadingContext.get().getModEventBus());
-        TRPMod.init();
-        ForgeComputerCraftAPI.registerPeripheralProvider(new TRPProviderForge());
-    }
+	public TRPModForge()
+	{
+		// Submit our event bus to let architectury register our content on the right time
+		EventBuses.registerModEventBus(TRPMod.MOD_ID, FMLJavaModLoadingContext.get().getModEventBus());
+		TRPMod.init();
+		ForgeComputerCraftAPI.registerPeripheralProvider(new TRPProviderForge());
+	}
 }
