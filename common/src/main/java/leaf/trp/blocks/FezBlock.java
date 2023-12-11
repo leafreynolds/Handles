@@ -3,6 +3,7 @@ package leaf.trp.blocks;
 import leaf.trp.blockEntities.FezTile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.item.Wearable;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
@@ -12,13 +13,14 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.AttachFace;
+import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nullable;
 
 
-public class FezBlock extends FaceAttachedHorizontalDirectionalBlock implements EntityBlock
+public class FezBlock extends FaceAttachedHorizontalDirectionalBlock implements EntityBlock, Wearable
 {
 	protected static final VoxelShape NORTH_AABB;
 	protected static final VoxelShape SOUTH_AABB;
@@ -43,6 +45,11 @@ public class FezBlock extends FaceAttachedHorizontalDirectionalBlock implements 
 	public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState)
 	{
 		return new FezTile(blockPos, blockState);
+	}
+
+	public boolean isPathfindable(BlockState arg, BlockGetter arg2, BlockPos arg3, PathComputationType arg4)
+	{
+		return false;
 	}
 
 	public VoxelShape getShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext)

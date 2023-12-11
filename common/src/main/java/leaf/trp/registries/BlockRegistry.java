@@ -4,10 +4,12 @@ import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
 import leaf.trp.TRPMod;
 import leaf.trp.blocks.FezBlock;
+import leaf.trp.blocks.WearableItemBlock;
 import net.minecraft.core.Registry;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
@@ -18,7 +20,24 @@ public class BlockRegistry
 {
 	public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(TRPMod.MOD_ID, Registry.BLOCK_REGISTRY);
 
-	public static final RegistrySupplier<FezBlock> FEZ = register("fez", () -> new FezBlock(BlockBehaviour.Properties.of(Material.BAMBOO).noOcclusion().strength(1000, 1000).sound(SoundType.BAMBOO)), true, true);
+	public static final RegistrySupplier<FezBlock> FEZ =
+			register("fez",
+					() ->
+							new FezBlock(BlockBehaviour.Properties
+									.of(Material.BAMBOO)
+									.noOcclusion()
+									.strength(1)
+									.sound(SoundType.BAMBOO)),
+					true,
+					false);
+
+	public static final RegistrySupplier<BlockItem> FEZ_ITEM =
+			ItemRegistry.ITEMS.register("fez", () ->
+			new WearableItemBlock(
+					FEZ.get(),
+					new Item.Properties().tab(ItemRegistry.MAIN_TAB),
+					EquipmentSlot.HEAD)
+			);
 
 	private static <T extends Block> RegistrySupplier<T> register(String id, Supplier<T> blockSupplier, boolean addToTab, boolean registerItem)
 	{

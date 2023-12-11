@@ -2,6 +2,7 @@ package leaf.trp.registries;
 
 import dev.architectury.registry.CreativeTabRegistry;
 import dev.architectury.registry.registries.DeferredRegister;
+import dev.architectury.registry.registries.RegistrySupplier;
 import leaf.trp.TRPMod;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
