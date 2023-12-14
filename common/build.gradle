@@ -3,7 +3,7 @@ architectury {
 }
 
 loom {
-	accessWidenerPath = file("src/main/resources/trp.accesswidener")
+	accessWidenerPath = file("src/main/resources/handles.accesswidener")
 }
 
 dependencies {
@@ -15,7 +15,7 @@ dependencies {
 	modCompileOnlyApi "net.minecraftforge:forgeconfigapiport-fabric:${rootProject.forge_config_api_port_version}"
 
 	//Yes, it is weird that we implement these fabric mods in _common_
-	//Just means we have to be careful not to access non-common stuff when in the TRP common module
+	//Just means we have to be careful not to access non-common stuff when in the Handles common module
 	modImplementation "com.github.cc-tweaked:cc-restitched:${project.ccr_version}"
 	modImplementation "maven.modrinth:tardis-refined:${tardis_refined_id}-fabric"
 

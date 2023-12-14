@@ -4,30 +4,30 @@ loaderVersion = "[41,)"
 license = "Insert License Here"
 
 [[mods]]
-modId = "trp"
+modId = "handles"
 version = "${version}"
-displayName = "Tardis Refined Peripherals"
+displayName = "Handles"
 authors = "Leaf"
 description = '''
 Bringing ComputerCraft functionality to Tardis Refined.
 '''
 #logoFile = ""
 
-[[dependencies.trp]]
+[[dependencies.handles]]
 modId = "forge"
 mandatory = true
 versionRange = "[41,)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.trp]]
+[[dependencies.handles]]
 modId = "minecraft"
 mandatory = true
 versionRange = "[1.19,)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.trp]]
+[[dependencies.handles]]
 modId = "architectury"
 mandatory = true
 versionRange = "[5.14.84,)"

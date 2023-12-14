@@ -1,27 +1,28 @@
 {
   "schemaVersion": 1,
-  "id": "trp",
+  "id": "handles",
   "version": "${version}",
-  "name": "Tardis Refined Peripherals",
-  "description": "Bringing ComputerCraft functionality to Tardis Refined.",
+  "name": "Handles",
+  "description": "Bringing ComputerCraft functionality to your favourite Tardis mods.",
   "authors": [
-    "Me!"
+    "Leaf",
+    "LotuxPunk"
   ],
   "contact": {
     "homepage": "https://fabricmc.net/",
     "sources": "https://github.com/FabricMC/fabric-example-mod"
   },
   "license": "MIT",
-  "icon": "assets/trp/icon.png",
+  "icon": "assets/handles/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "leaf.trp.fabric.TRPModFabric"
+      "leaf.handles.fabric.HandlesModFabric"
     ]
   },
   "mixins": [
-    "trp.mixins.json",
-    "trp-common.mixins.json"
+    "handles.mixins.json",
+    "handles-common.mixins.json"
   ],
   "depends": {
     "fabric": "*",
