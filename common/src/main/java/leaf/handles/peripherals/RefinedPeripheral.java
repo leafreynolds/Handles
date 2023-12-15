@@ -24,10 +24,9 @@ import whocraft.tardis_refined.common.util.DimensionUtil;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 //ignore unused, as computercraft collects functions at run time
 @SuppressWarnings("unused")
@@ -477,19 +476,13 @@ public class RefinedPeripheral implements IPeripheral
 				throw new LuaException("Server Null Exception");
 			}
 
-			var filteredLevels = server.getAllLevels();
-			var filteredDimensions = new ArrayList<String>();
+			final Set<String> filteredDimensions = StreamSupport.stream(server.getAllLevels().spliterator(), false)//convert server levels to streamable
+					.map(Level::dimension)// map to dimension associated with level
+					.filter(DimensionUtil::isAllowedDimension)//filter out the non-allowed dimensions, according to tardis refined
+					.map(dimension -> dimension.location().toString())//then map those to a string that the user will use
+					.collect(Collectors.toSet());//finally, collect it into a table for the user to iterate over
 
-			for (ServerLevel level : filteredLevels)
-			{
-				final ResourceKey<Level> dimension = level.dimension();
-				if (DimensionUtil.isAllowedDimension(dimension))
-				{
-					filteredDimensions.add(dimension.location().toString());
-				}
-			}
-
-			return MethodResult.of(filteredDimensions.toArray());
+			return MethodResult.of(filteredDimensions);
 		}
 		else
 		{
