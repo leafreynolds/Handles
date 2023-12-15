@@ -16,19 +16,10 @@ public class HandlesProviderCommon
 	public static IPeripheral getPeripheral(@Nonnull Level world, @Nonnull BlockPos pos, @Nonnull Direction side)
 	{
 		BlockEntity be = world.getBlockEntity(pos);
-		if (be instanceof IPeripheralTile)
+		if (be instanceof IPeripheralTile peripheralTile)
 		{
-			return ((IPeripheralTile) be).getPeripheral(side);
+			return peripheralTile.getPeripheral(side);
 		}
-		// todo  - update this file when trying to differentiate between tardis from NTM team and tardis from TardisRefined
-		//if (Platform.isModLoaded("tardis"))
-		//{
-		//	IPeripheral newTardisModPeriph = NewTardisModPeripheralProvider.getPeripheral(world, pos, side);
-		//	if (newTardisModPeriph != null)
-		//	{
-		//		return newTardisModPeriph;
-		//	}
-		//}
 		return null;
 	}
 }

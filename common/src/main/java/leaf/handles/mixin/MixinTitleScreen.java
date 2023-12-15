@@ -1,5 +1,6 @@
 package leaf.handles.mixin;
 
+import leaf.handles.HandlesMod;
 import net.minecraft.client.gui.screens.TitleScreen;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -12,6 +13,6 @@ public class MixinTitleScreen
 	@Inject(at = @At("HEAD"), method = "init()V")
 	private void init(CallbackInfo info)
 	{
-		System.out.println("Handles, ready for duty!");
+		HandlesMod.LOGGER.info("Handles, ready for duty!");
 	}
 }

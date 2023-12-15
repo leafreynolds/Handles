@@ -6,7 +6,6 @@ import dan200.computercraft.api.lua.LuaFunction;
 import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
-import leaf.handles.blockEntities.FezTile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceKey;
@@ -14,6 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
@@ -33,13 +33,13 @@ import java.util.Optional;
 @SuppressWarnings("unused")
 public class RefinedPeripheral implements IPeripheral
 {
-	private final FezTile fezTile;
+	private final BlockEntity blockEntity;
 
 	public List<IComputerAccess> computers = new ArrayList<>();
 
-	public RefinedPeripheral(FezTile fezTile)
+	public RefinedPeripheral(BlockEntity blockEntity)
 	{
-		this.fezTile = fezTile;
+		this.blockEntity = blockEntity;
 	}
 
 	@Nonnull
@@ -81,7 +81,7 @@ public class RefinedPeripheral implements IPeripheral
 	@LuaFunction
 	public final boolean isInFlight() throws LuaException
 	{
-		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
 		{
 			final TardisLevelOperator tardisLevelOperator = optional.get();
@@ -97,7 +97,7 @@ public class RefinedPeripheral implements IPeripheral
 	@LuaFunction
 	public final float getFlightPercent() throws LuaException
 	{
-		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 
 		if (optional.isPresent())
 		{
@@ -114,7 +114,7 @@ public class RefinedPeripheral implements IPeripheral
 	@LuaFunction
 	public final MethodResult canEndFlight() throws LuaException
 	{
-		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 
 		if (optional.isPresent())
 		{
@@ -131,7 +131,7 @@ public class RefinedPeripheral implements IPeripheral
 	@LuaFunction
 	public final MethodResult getIsLanding() throws LuaException
 	{
-		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
 		{
 			final TardisLevelOperator tardisLevelOperator = optional.get();
@@ -147,9 +147,14 @@ public class RefinedPeripheral implements IPeripheral
 
 	private static ServerLevel getServerLevel(TardisLevelOperator tardisLevelOperator, String dim)
 	{
-		var filteredLevels = tardisLevelOperator.getLevel().getServer().getAllLevels();
+		final MinecraftServer server = tardisLevelOperator.getLevel().getServer();
 
-		for (ServerLevel level : filteredLevels)
+		if (server == null)
+		{
+			return null;
+		}
+
+		for (ServerLevel level : server.getAllLevels())
 		{
 			final ResourceKey<Level> dimension = level.dimension();
 			final ResourceLocation location = dimension.location();
@@ -166,7 +171,7 @@ public class RefinedPeripheral implements IPeripheral
 	@LuaFunction
 	public final MethodResult getTargetLocation() throws LuaException
 	{
-		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
 		{
 			final TardisLevelOperator tardisLevelOperator = optional.get();
@@ -189,7 +194,7 @@ public class RefinedPeripheral implements IPeripheral
 	@LuaFunction
 	public final MethodResult setTargetLocation(IArguments args) throws LuaException
 	{
-		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
 		{
 			final TardisLevelOperator tardisLevelOperator = optional.get();
@@ -231,7 +236,7 @@ public class RefinedPeripheral implements IPeripheral
 	@LuaFunction
 	public final MethodResult getTargetPosition() throws LuaException
 	{
-		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
 		{
 			final TardisLevelOperator tardisLevelOperator = optional.get();
@@ -252,7 +257,7 @@ public class RefinedPeripheral implements IPeripheral
 	@LuaFunction
 	public final MethodResult setTargetPosition(IArguments args) throws LuaException
 	{
-		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
 		{
 			final TardisLevelOperator tardisLevelOperator = optional.get();
@@ -279,7 +284,7 @@ public class RefinedPeripheral implements IPeripheral
 	@LuaFunction
 	public final MethodResult getTargetDirection() throws LuaException
 	{
-		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
 		{
 			final TardisLevelOperator tardisLevelOperator = optional.get();
@@ -299,7 +304,7 @@ public class RefinedPeripheral implements IPeripheral
 	@LuaFunction
 	public final MethodResult setTargetDirection(String dir) throws LuaException
 	{
-		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
 		{
 			final TardisLevelOperator tardisLevelOperator = optional.get();
@@ -327,7 +332,7 @@ public class RefinedPeripheral implements IPeripheral
 	@LuaFunction
 	public final MethodResult getTargetDimension() throws LuaException
 	{
-		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
 		{
 			final TardisLevelOperator tardisLevelOperator = optional.get();
@@ -342,7 +347,7 @@ public class RefinedPeripheral implements IPeripheral
 	@LuaFunction
 	public final MethodResult setTargetDimension(String dimensionName) throws LuaException
 	{
-		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
 		{
 			final TardisLevelOperator tardisLevelOperator = optional.get();
@@ -368,7 +373,7 @@ public class RefinedPeripheral implements IPeripheral
 	@LuaFunction
 	public final MethodResult getLastKnownLocation() throws LuaException
 	{
-		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
 		{
 			final TardisLevelOperator tardisLevelOperator = optional.get();
@@ -391,7 +396,7 @@ public class RefinedPeripheral implements IPeripheral
 	@LuaFunction
 	public final MethodResult getLastKnownDimension() throws LuaException
 	{
-		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
 		{
 			final TardisLevelOperator tardisLevelOperator = optional.get();
@@ -409,7 +414,7 @@ public class RefinedPeripheral implements IPeripheral
 	@LuaFunction
 	public final MethodResult getLastKnownDirection() throws LuaException
 	{
-		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
 		{
 			final TardisLevelOperator tardisLevelOperator = optional.get();
@@ -461,7 +466,7 @@ public class RefinedPeripheral implements IPeripheral
 	@LuaFunction
 	public final MethodResult getDimensions() throws LuaException
 	{
-		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
 		{
 			final TardisLevelOperator tardisLevelOperator = optional.get();
@@ -497,7 +502,7 @@ public class RefinedPeripheral implements IPeripheral
 	@LuaFunction
 	public final MethodResult getInternalDoorOpen() throws LuaException
 	{
-		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
 		{
 			final TardisLevelOperator tardisLevelOperator = optional.get();
@@ -514,7 +519,7 @@ public class RefinedPeripheral implements IPeripheral
 	@LuaFunction
 	public final MethodResult setDoorClosed(boolean closed) throws LuaException
 	{
-		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
 		{
 			final TardisLevelOperator tardisLevelOperator = optional.get();
@@ -530,7 +535,7 @@ public class RefinedPeripheral implements IPeripheral
 	@LuaFunction
 	public final MethodResult getDoorLocked() throws LuaException
 	{
-		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
 		{
 			final TardisLevelOperator tardisLevelOperator = optional.get();
@@ -545,7 +550,7 @@ public class RefinedPeripheral implements IPeripheral
 	@LuaFunction
 	public final MethodResult setDoorLocked(boolean locked) throws LuaException
 	{
-		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
 		{
 			final TardisLevelOperator tardisLevelOperator = optional.get();
@@ -574,7 +579,7 @@ public class RefinedPeripheral implements IPeripheral
 	@LuaFunction
 	public final MethodResult getIsOnCooldown() throws LuaException
 	{
-		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
 		{
 			final TardisLevelOperator tardisLevelOperator = optional.get();
@@ -590,7 +595,7 @@ public class RefinedPeripheral implements IPeripheral
 	@LuaFunction
 	public final MethodResult getIsCrashing() throws LuaException
 	{
-		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
 		{
 			final TardisLevelOperator tardisLevelOperator = optional.get();
@@ -640,7 +645,7 @@ public class RefinedPeripheral implements IPeripheral
 	@LuaFunction
 	public final MethodResult getCanUseControls() throws LuaException
 	{
-		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
 		{
 			final TardisLevelOperator tardisLevelOperator = optional.get();
@@ -657,7 +662,7 @@ public class RefinedPeripheral implements IPeripheral
 	@LuaFunction
 	public final MethodResult getIsAutoLandSet() throws LuaException
 	{
-		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
 		{
 			final TardisLevelOperator tardisLevelOperator = optional.get();
@@ -673,7 +678,7 @@ public class RefinedPeripheral implements IPeripheral
 	@LuaFunction
 	public final MethodResult setIsAutoLandSet(boolean autoLand) throws LuaException
 	{
-		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
 		{
 			final TardisLevelOperator tardisLevelOperator = optional.get();
@@ -692,7 +697,7 @@ public class RefinedPeripheral implements IPeripheral
 	@LuaFunction
 	public final MethodResult getExteriorTheme() throws LuaException
 	{
-		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
 		{
 			final TardisLevelOperator tardisLevelOperator = optional.get();
@@ -710,7 +715,7 @@ public class RefinedPeripheral implements IPeripheral
 	@LuaFunction
 	public final MethodResult setShellTheme(String shellTheme) throws LuaException
 	{
-		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
 		{
 			final TardisLevelOperator tardisLevelOperator = optional.get();
@@ -742,7 +747,7 @@ public class RefinedPeripheral implements IPeripheral
 	@LuaFunction
 	public final MethodResult setShellPattern(String shellTheme, String shellPattern) throws LuaException
 	{
-		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
 		{
 			final TardisLevelOperator tardisLevelOperator = optional.get();
