@@ -15,7 +15,7 @@ plugins {
 }
 
 def build_number = System.env.BUILD_NUMBER ?: 1
-def full_mod_version = mod_version + "." + build_number
+def mod_version_and_build = mod_version + "." + build_number
 def release_type = System.env.TC_RELEASE_TYPE ?: "alpha"
 
 architectury {
@@ -67,7 +67,7 @@ allprojects {
 		archivesName = rootProject.archives_base_name
 	}
 
-	version = "${minecraft_version}-" + full_mod_version
+	version = "${minecraft_version}-" + mod_version_and_build
 	group = rootProject.maven_group
 
 	repositories {
@@ -222,7 +222,8 @@ if (System.getenv("MODRINTH_API_TOKEN") != null || project.hasProperty('modrinth
 			token = System.getenv("modrinth_api_token")
 		}
 		projectId = "zYnlJN4c"
-		versionNumber = "${full_mod_version}"
+		//pass it the mod version and build, so if we don't want to increment version for whatever reason, it wont conflict
+		versionNumber = "${mod_version_and_build}"
 		versionType = "${release_type}"
 		changelog = changeLogResolver.call()
 		uploadFile = jar
