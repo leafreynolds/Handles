@@ -1,5 +1,7 @@
 {
   "item.handles.fez": "Fez",
   "block.handles.fez": "Fez",
+  "item.handles.antenna": "Antenna",
+  "block.handles.antenna": "Antenna",
   "itemGroup.handles.main_tab": "Handles"
 }

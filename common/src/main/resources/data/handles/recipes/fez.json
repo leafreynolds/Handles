@@ -1,13 +1,20 @@
 {
   "type": "minecraft:crafting_shaped",
   "key": {
-    "X": {
+    "W": {
       "item": "minecraft:red_wool"
+    },
+    "B": {
+      "item": "minecraft:black_wool"
+    },
+    "R": {
+      "item": "minecraft:redstone"
     }
   },
   "pattern": [
-    " X ",
-    "X X"
+    " B ",
+    "WWW",
+    "WRW"
   ],
   "result": {
     "item": "handles:fez"
