@@ -27,7 +27,4 @@ java {
 
 dependencies {
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
-    implementation("com.github.javaparser:javaparser-symbol-solver-core:3.25.7")
-    implementation("com.github.javaparser:javaparser-core:3.25.7")
-    implementation("com.github.javaparser:javaparser-core-serialization:3.25.7")
 }

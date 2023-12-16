@@ -42,3 +42,7 @@ publishing {
 		// Add repositories to publish to here.
 	}
 }
+
+tasks.named('writeDocumentation') {
+    dependsOn('build')
+}

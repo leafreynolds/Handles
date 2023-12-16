@@ -82,8 +82,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 
 
 	@HandlesFunction(
-        description = "",
-        returns = ""
+        description = "Determines if the Tardis can begin flight.",
+        returns = "A boolean value indicating if the Tardis can begin flight."
     )
     @LuaFunction
 	public final boolean canBeginFlight() throws LuaException
@@ -104,11 +104,13 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	//Auto lands the tardis if stabilized flight is true.
 	//Stabilized flight has no flight events.
 	@HandlesFunction(
-        description = "",
-        returns = ""
+        description = "Starts the TARDIS flight.",
+        returns = "Success or failure of the flight as a boolean value."
     )
     @LuaFunction
-	public final MethodResult beginFlight(boolean stabilizedFlight) throws LuaException
+	public final MethodResult beginFlight(
+        @HandlesParameter(name = "stabilizedFlight") boolean stabilizedFlight
+    ) throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 
@@ -126,8 +128,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	}
 
 	@HandlesFunction(
-        description = "",
-        returns = ""
+        description = "Obtains the flight status of the TARDIS.",
+        returns = "A boolean value indicating if the TARDIS is in flight."
     )
     @LuaFunction
 	public final boolean isInFlight() throws LuaException
@@ -146,8 +148,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	}
 
 	@HandlesFunction(
-        description = "",
-        returns = ""
+        description = "Fetches the flight event status of the TARDIS.",
+        returns = "A boolean value indicating if the TARDIS has an active flight event."
     )
     @LuaFunction
 	public final MethodResult getFlightEventActive() throws LuaException
@@ -237,8 +239,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	}
 
 	@HandlesFunction(
-        description = "",
-        returns = ""
+        description = "Determines if the TARDIS is in the danger zone.",
+        returns = "A boolean value indicating if the TARDIS is in the danger zone."
     )
     @LuaFunction
 	public final MethodResult isInDangerZone() throws LuaException
@@ -299,11 +301,7 @@ public class RefinedPeripheral implements IHandlesPeripheral
 		}
 	}
 	/* todo enable function when accessor is available
-	@HandlesFunction(
-	description = "
-,
-    d= "
-uaFunctionpublic final MethodResult isEventInComboTime() throws LuaException
+	public final MethodResult isEventInComboTime() throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 
@@ -320,11 +318,7 @@ uaFunctionpublic final MethodResult isEventInComboTime() throws LuaException
 	}
 
 	//todo enable function when accessor is available
-	@HandlesFunction(
-	description = "
-,
-    d= "
-uaFunctionpublic final MethodResult getControlRequestCooldown() throws LuaException
+	public final MethodResult getControlRequestCooldown() throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 
@@ -342,8 +336,8 @@ uaFunctionpublic final MethodResult getControlRequestCooldown() throws LuaExcept
 */
 
 	@HandlesFunction(
-        description = "",
-        returns = ""
+        description = "Obtains the flight percentage of the TARDIS.",
+        returns = "A float value indicating the flight percentage of the TARDIS."
     )
     @LuaFunction
 	public final float getFlightPercent() throws LuaException
@@ -363,8 +357,8 @@ uaFunctionpublic final MethodResult getControlRequestCooldown() throws LuaExcept
 	}
 
 	@HandlesFunction(
-        description = "",
-        returns = ""
+        description = "Determines if the TARDIS can end flight.",
+        returns = "A boolean value indicating if the TARDIS can end flight."
     )
     @LuaFunction
 	public final MethodResult canEndFlight() throws LuaException
@@ -384,8 +378,8 @@ uaFunctionpublic final MethodResult getControlRequestCooldown() throws LuaExcept
 	}
 
 	@HandlesFunction(
-        description = "",
-        returns = ""
+        description = "Stops the TARDIS flight.",
+        returns = "A boolean value indicating if the TARDIS flight was stopped."
     )
     @LuaFunction
 	public final MethodResult endFlight() throws LuaException
@@ -405,8 +399,8 @@ uaFunctionpublic final MethodResult getControlRequestCooldown() throws LuaExcept
 	}
 
 	@HandlesFunction(
-        description = "",
-        returns = ""
+        description = "Determines if the TARDIS is landing.",
+        returns = "A boolean value indicating if the TARDIS is landing."
     )
     @LuaFunction
 	public final MethodResult getIsLanding() throws LuaException
