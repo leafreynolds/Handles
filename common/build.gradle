@@ -1,6 +1,11 @@
+import leaf.handles.documentation.DocumentationParser
+
 architectury {
 	common(rootProject.enabled_platforms.split(","))
 }
+
+apply plugin: DocumentationParser
+
 
 loom {
 	accessWidenerPath = file("src/main/resources/handles.accesswidener")
