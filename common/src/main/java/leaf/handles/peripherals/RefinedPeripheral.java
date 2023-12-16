@@ -76,7 +76,9 @@ public class RefinedPeripheral implements IPeripheral
 		}
 	}
 
-	//region Flight - beginFlight/isInFlight/getFlightPercent/canEndFlight/getIsLanding
+	//region Flight -
+	// beginFlight/isInFlight/getFlightEventActive/getFlightEventControl/getRequiredFlightEvents/getRespondedFlightEvents/
+	// isInDangerZone/areControlEventsComplete/areDangerZoneEventsComplete/getFlightPercent/canEndFlight/getIsLanding
 
 
 	//Auto lands the tardis if stabilized flight is true.
@@ -853,7 +855,7 @@ public class RefinedPeripheral implements IPeripheral
 	}
 
 	@LuaFunction
-	public final MethodResult setIsAutoLandSet(boolean autoLand) throws LuaException
+	public final MethodResult setAutoLand(boolean autoLand) throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
