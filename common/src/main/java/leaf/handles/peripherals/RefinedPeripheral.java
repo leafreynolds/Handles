@@ -76,7 +76,29 @@ public class RefinedPeripheral implements IPeripheral
 		}
 	}
 
-	//region Flight - isInFlight/getFlightPercent/canEndFlight/getIsLanding
+	//region Flight - beginFlight/isInFlight/getFlightPercent/canEndFlight/getIsLanding
+
+
+	//Auto lands the tardis if stabilized flight is true.
+	//Stabilized flight has no flight events.
+	@LuaFunction
+	public final MethodResult beginFlight(boolean stabilizedFlight) throws LuaException
+	{
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
+
+		if (optional.isPresent())
+		{
+			final TardisLevelOperator tardisLevelOperator = optional.get();
+			final TardisControlManager controlManager = tardisLevelOperator.getControlManager();
+			//auto lands the tardis if stabilized flight is true.
+			return MethodResult.of(controlManager.beginFlight(stabilizedFlight));
+		}
+		else
+		{
+			throw new LuaException("No Tardis Found");
+		}
+	}
+
 	@LuaFunction
 	public final boolean isInFlight() throws LuaException
 	{
@@ -92,6 +114,168 @@ public class RefinedPeripheral implements IPeripheral
 			throw new LuaException("No Tardis Found");
 		}
 	}
+
+	@LuaFunction
+	public final MethodResult getFlightEventActive() throws LuaException
+	{
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
+
+		if (optional.isPresent())
+		{
+			final TardisLevelOperator tardisLevelOperator = optional.get();
+			TardisFlightEventManager flightEventManager = tardisLevelOperator.getTardisFlightEventManager();
+			return MethodResult.of(flightEventManager.isWaitingForControlResponse());
+		}
+		else
+		{
+			throw new LuaException("No Tardis Found");
+		}
+	}
+
+	//if the tardis has an active flight event control to press,
+	//will return the id name of that control
+	//else returns null (nil for lua?)
+	@LuaFunction
+	public final MethodResult getFlightEventControl() throws LuaException
+	{
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
+
+		if (optional.isPresent())
+		{
+			final TardisLevelOperator tardisLevelOperator = optional.get();
+			TardisFlightEventManager flightEventManager = tardisLevelOperator.getTardisFlightEventManager();
+			return MethodResult.of(
+					flightEventManager.isWaitingForControlResponse()
+					? flightEventManager.getWaitingControlPrompt().getSerializedName()
+					: null
+			);
+		}
+		else
+		{
+			throw new LuaException("No Tardis Found");
+		}
+	}
+
+	@LuaFunction
+	public final MethodResult getRequiredFlightEvents() throws LuaException
+	{
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
+
+		if (optional.isPresent())
+		{
+			final TardisLevelOperator tardisLevelOperator = optional.get();
+			TardisFlightEventManager flightEventManager = tardisLevelOperator.getTardisFlightEventManager();
+			return MethodResult.of(flightEventManager.getRequiredControlRequests());
+		}
+		else
+		{
+			throw new LuaException("No Tardis Found");
+		}
+	}
+
+	@LuaFunction
+	public final MethodResult getRespondedFlightEvents() throws LuaException
+	{
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
+
+		if (optional.isPresent())
+		{
+			final TardisLevelOperator tardisLevelOperator = optional.get();
+			TardisFlightEventManager flightEventManager = tardisLevelOperator.getTardisFlightEventManager();
+			return MethodResult.of(flightEventManager.getControlResponses());
+		}
+		else
+		{
+			throw new LuaException("No Tardis Found");
+		}
+	}
+
+	@LuaFunction
+	public final MethodResult isInDangerZone() throws LuaException
+	{
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
+
+		if (optional.isPresent())
+		{
+			final TardisLevelOperator tardisLevelOperator = optional.get();
+			TardisFlightEventManager flightEventManager = tardisLevelOperator.getTardisFlightEventManager();
+			return MethodResult.of(flightEventManager.isInDangerZone());
+		}
+		else
+		{
+			throw new LuaException("No Tardis Found");
+		}
+	}
+
+	@LuaFunction
+	public final MethodResult areControlEventsComplete() throws LuaException
+	{
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
+
+		if (optional.isPresent())
+		{
+			final TardisLevelOperator tardisLevelOperator = optional.get();
+			TardisFlightEventManager flightEventManager = tardisLevelOperator.getTardisFlightEventManager();
+			return MethodResult.of(flightEventManager.areControlEventsComplete());
+		}
+		else
+		{
+			throw new LuaException("No Tardis Found");
+		}
+	}
+
+	@LuaFunction
+	public final MethodResult areDangerZoneEventsComplete() throws LuaException
+	{
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
+
+		if (optional.isPresent())
+		{
+			final TardisLevelOperator tardisLevelOperator = optional.get();
+			TardisFlightEventManager flightEventManager = tardisLevelOperator.getTardisFlightEventManager();
+			return MethodResult.of(flightEventManager.areDangerZoneEventsComplete());
+		}
+		else
+		{
+			throw new LuaException("No Tardis Found");
+		}
+	}
+	/* todo enable function when accessor is available
+	@LuaFunction
+	public final MethodResult isEventInComboTime() throws LuaException
+	{
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
+
+		if (optional.isPresent())
+		{
+			final TardisLevelOperator tardisLevelOperator = optional.get();
+			TardisFlightEventManager flightEventManager = tardisLevelOperator.getTardisFlightEventManager();
+			return MethodResult.of(flightEventManager.isEventInComboTime());
+		}
+		else
+		{
+			throw new LuaException("No Tardis Found");
+		}
+	}
+
+	//todo enable function when accessor is available
+	@LuaFunction
+	public final MethodResult getControlRequestCooldown() throws LuaException
+	{
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
+
+		if (optional.isPresent())
+		{
+			final TardisLevelOperator tardisLevelOperator = optional.get();
+			TardisFlightEventManager flightEventManager = tardisLevelOperator.getTardisFlightEventManager();
+			return MethodResult.of(flightEventManager.getControlRequestCooldown());
+		}
+		else
+		{
+			throw new LuaException("No Tardis Found");
+		}
+	}
+*/
 
 	@LuaFunction
 	public final float getFlightPercent() throws LuaException

@@ -39,9 +39,10 @@ public class TardisPeripheralTile extends BlockEntity implements IPeripheralTile
 	{
 		if (peripheral == null)
 		{
-
-			peripheral = new RefinedPeripheral(this);
-			return peripheral;
+			if (Platform.isModLoaded("tardis_refined"))
+			{
+				peripheral = new RefinedPeripheral(this);
+			}
 
 			// Todo - The below doesn't work, because level is null.
 			//  Will need a better way of getting mod dependent peripherals
