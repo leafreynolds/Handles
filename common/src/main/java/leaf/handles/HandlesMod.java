@@ -1,5 +1,6 @@
 package leaf.handles;
 
+import leaf.handles.compat.HandlesModCompat;
 import leaf.handles.registries.BlockEntityRegistry;
 import leaf.handles.registries.BlockRegistry;
 import leaf.handles.registries.ItemRegistry;
@@ -18,6 +19,7 @@ public class HandlesMod
 		//then items
 		ItemRegistry.ITEMS.register();
 		BlockEntityRegistry.BLOCK_ENTITIES.register();
+		HandlesModCompat.init();
 
 		System.out.println(HandlesExpectPlatform.getConfigDirectory().toAbsolutePath().normalize().toString());
 	}

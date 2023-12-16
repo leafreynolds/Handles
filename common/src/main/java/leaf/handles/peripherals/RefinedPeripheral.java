@@ -24,13 +24,14 @@ import whocraft.tardis_refined.common.util.DimensionUtil;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 //ignore unused, as computercraft collects functions at run time
 @SuppressWarnings("unused")
-public class RefinedPeripheral implements IPeripheral
+public class RefinedPeripheral implements IHandlesPeripheral
 {
 	private final BlockEntity blockEntity;
 
@@ -67,12 +68,11 @@ public class RefinedPeripheral implements IPeripheral
 	}
 
 	//called from tick?
-	public void newEvent()
+	public void queueEvent(@Nonnull String event, @Nullable Object... arguments)
 	{
-		boolean someValue = false;
 		for (IComputerAccess computer : computers)
 		{
-			computer.queueEvent("some_event_name", computer.getAttachmentName(), someValue);
+			computer.queueEvent(event, computer.getAttachmentName(), arguments);
 		}
 	}
 
