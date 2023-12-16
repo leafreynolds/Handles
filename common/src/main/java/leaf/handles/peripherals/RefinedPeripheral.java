@@ -77,9 +77,25 @@ public class RefinedPeripheral implements IPeripheral
 	}
 
 	//region Flight -
-	// beginFlight/isInFlight/getFlightEventActive/getFlightEventControl/getRequiredFlightEvents/getRespondedFlightEvents/
-	// isInDangerZone/areControlEventsComplete/areDangerZoneEventsComplete/getFlightPercent/canEndFlight/getIsLanding
+	// canBeginFlight/beginFlight/isInFlight/getFlightEventActive/getFlightEventControl/getRequiredFlightEvents/getRespondedFlightEvents/
+	// isInDangerZone/areControlEventsComplete/areDangerZoneEventsComplete/getFlightPercent/canEndFlight/endFlight/getIsLanding
 
+
+	@LuaFunction
+	public final boolean canBeginFlight() throws LuaException
+	{
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
+		if (optional.isPresent())
+		{
+			final TardisLevelOperator tardisLevelOperator = optional.get();
+			final TardisControlManager controlManager = tardisLevelOperator.getControlManager();
+			return controlManager.canBeginFlight();
+		}
+		else
+		{
+			throw new LuaException("No Tardis Found");
+		}
+	}
 
 	//Auto lands the tardis if stabilized flight is true.
 	//Stabilized flight has no flight events.
@@ -306,6 +322,23 @@ public class RefinedPeripheral implements IPeripheral
 			final TardisLevelOperator tardisLevelOperator = optional.get();
 			final TardisControlManager controlManager = tardisLevelOperator.getControlManager();
 			return MethodResult.of(controlManager.canEndFlight());
+		}
+		else
+		{
+			throw new LuaException("No Tardis Found");
+		}
+	}
+
+	@LuaFunction
+	public final MethodResult endFlight() throws LuaException
+	{
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
+
+		if (optional.isPresent())
+		{
+			final TardisLevelOperator tardisLevelOperator = optional.get();
+			final TardisControlManager controlManager = tardisLevelOperator.getControlManager();
+			return MethodResult.of(controlManager.endFlight());
 		}
 		else
 		{
