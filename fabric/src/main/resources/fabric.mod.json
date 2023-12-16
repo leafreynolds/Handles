@@ -28,5 +28,8 @@
     "fabric": "*",
     "minecraft": ">=1.19",
     "architectury": ">=5.14.84"
+  },
+  "recommends": {
+    "tardis_refined": "1.0.1"
   }
 }

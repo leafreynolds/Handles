@@ -1,5 +1,3 @@
-import com.modrinth.minotaur.dependencies.ModDependency
-
 plugins {
 	id "com.github.johnrengelman.shadow" version "7.1.2"
 	id 'net.darkhax.curseforgegradle' version '1.0.14'
@@ -60,7 +58,7 @@ processResources {
 	inputs.property "version", project.version
 
 	filesMatching("META-INF/mods.toml") {
-		expand "version": project.version
+		expand "version": project.mod_version_and_build
 	}
 }
 
@@ -73,7 +71,9 @@ shadowJar {
 }
 
 remapJar {
+	injectAccessWidener = true
 	input.set shadowJar.archiveFile
+	archiveClassifier = "forge"
 	dependsOn shadowJar
 }
 
