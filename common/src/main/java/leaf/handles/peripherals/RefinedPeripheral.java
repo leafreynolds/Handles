@@ -558,8 +558,14 @@ public class RefinedPeripheral implements IHandlesPeripheral
         description = "Sets the target location information. Takes in an x,y,z coordinate, a string of the facing direction, a string of the dimension ID",
         returns = ""
     )
-    @LuaFunction
-	public final MethodResult setTargetLocation(int x, int y, int z, String directionName, String dimensionID) throws LuaException
+	@LuaFunction
+	public final MethodResult setTargetLocation(
+			@HandlesParameter(name = "x") int x,
+			@HandlesParameter(name = "y") int y,
+			@HandlesParameter(name = "z") int z,
+			@HandlesParameter(name = "directionName") String directionName,
+			@HandlesParameter(name = "dimensionID") String dimensionID
+	) throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
@@ -628,7 +634,11 @@ public class RefinedPeripheral implements IHandlesPeripheral
         returns = ""
     )
     @LuaFunction
-	public final MethodResult setTargetPosition(int x, int y, int z) throws LuaException
+	public final MethodResult setTargetPosition(
+			@HandlesParameter(name = "x") int x,
+			@HandlesParameter(name = "y") int y,
+			@HandlesParameter(name = "z") int z
+	) throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
@@ -682,7 +692,9 @@ public class RefinedPeripheral implements IHandlesPeripheral
         returns = ""
     )
     @LuaFunction
-	public final MethodResult setTargetDirection(String dir) throws LuaException
+	public final MethodResult setTargetDirection(
+			@HandlesParameter(name = "dir") String dir
+	) throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
@@ -741,7 +753,9 @@ public class RefinedPeripheral implements IHandlesPeripheral
         returns = ""
     )
     @LuaFunction
-	public final MethodResult setTargetDimension(String dimensionName) throws LuaException
+	public final MethodResult setTargetDimension(
+			@HandlesParameter(name = "dimensionName") String dimensionName
+	) throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
@@ -1140,7 +1154,9 @@ public class RefinedPeripheral implements IHandlesPeripheral
         returns = ""
     )
     @LuaFunction
-	public final MethodResult setAutoLand(boolean autoLand) throws LuaException
+	public final MethodResult setAutoLand(
+			@HandlesParameter(name = "autoLand") boolean autoLand
+	) throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
@@ -1189,7 +1205,9 @@ public class RefinedPeripheral implements IHandlesPeripheral
         returns = ""
     )
     @LuaFunction
-	public final MethodResult setShellTheme(String shellTheme) throws LuaException
+	public final MethodResult setShellTheme(
+			@HandlesParameter(name = "shellTheme") String shellTheme
+	) throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
@@ -1237,7 +1255,10 @@ public class RefinedPeripheral implements IHandlesPeripheral
         returns = ""
     )
     @LuaFunction
-	public final MethodResult setShellPattern(String shellTheme, String shellPattern) throws LuaException
+	public final MethodResult setShellPattern(
+			@HandlesParameter(name = "shellTheme") String shellTheme,
+	        @HandlesParameter(name = "shellPattern") String shellPattern)
+			throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
