@@ -84,7 +84,7 @@ public class RefinedPeripheral implements IHandlesPeripheral
 
 	@HandlesFunction(
         description = "Determines if the Tardis can begin flight.",
-        returns = "A boolean value indicating if the Tardis can begin flight."
+        returns = "A boolean value - true if can begin flight, else false."
     )
     @LuaFunction
 	public final boolean canBeginFlight() throws LuaException
@@ -790,8 +790,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	}
 
 	@HandlesFunction(
-        description = "",
-        returns = ""
+			description = "Gets the last known exterior dimension",
+			returns = "the dimension id, in the format of 'mod:dimension_name'"
     )
     @LuaFunction
 	public final MethodResult getLastKnownDimension() throws LuaException
@@ -812,8 +812,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	}
 
 	@HandlesFunction(
-        description = "",
-        returns = ""
+        description = "Gets the last known exterior facing direction",
+        returns = "the direction facing string id"
     )
     @LuaFunction
 	public final MethodResult getLastKnownDirection() throws LuaException
@@ -837,10 +837,11 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	//region FastReturnLocation - Get
 	/* todo uncomment when available
 	@HandlesFunction(
-	description = "
-,
-    d= "
-uaFunctionpublic final MethodResult getFastReturnLocation() throws LuaException
+        description = "Gets the fast return location, which is set when starting a flight.",
+        returns = "the x,y,z coordinates of the fast return location"
+    )
+    @LuaFunction
+	public final MethodResult getFastReturnLocation() throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
@@ -871,8 +872,8 @@ uaFunctionpublic final MethodResult getFastReturnLocation() throws LuaException
 
 	//region Dimensions - gets list of dimensions that the tardis is allowed to travel to
 	@HandlesFunction(
-        description = "",
-        returns = ""
+        description = "Gets the whitelisted list of dimensions that a tardis can travel to.",
+        returns = "An iterable list of dimension strings, in the format of 'mod:dimension_name'"
     )
     @LuaFunction
 	public final MethodResult getDimensions() throws LuaException
@@ -905,8 +906,8 @@ uaFunctionpublic final MethodResult getFastReturnLocation() throws LuaException
 
 	//region Doors - getInternalDoorOpen, setDoorClosed, getDoorLocked, setDoorLocked
 	@HandlesFunction(
-        description = "",
-        returns = ""
+        description = "Gets whether your primary internal door is open or not.",
+        returns = "true if open, false if not."
     )
     @LuaFunction
 	public final MethodResult getInternalDoorOpen() throws LuaException
@@ -926,11 +927,11 @@ uaFunctionpublic final MethodResult getFastReturnLocation() throws LuaException
 	}
 
 	@HandlesFunction(
-        description = "",
+        description = "Sets your doors open/closed state",
         returns = ""
     )
     @LuaFunction
-	public final MethodResult setDoorClosed(boolean closed) throws LuaException
+	public final MethodResult setDoorClosed(@HandlesParameter(name = "closed") boolean closed) throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
@@ -950,8 +951,8 @@ uaFunctionpublic final MethodResult getFastReturnLocation() throws LuaException
 	}
 
 	@HandlesFunction(
-        description = "",
-        returns = ""
+        description = "Gets the current door locked status",
+        returns = "Two values - internal door locked, external door locked"
     )
     @LuaFunction
 	public final MethodResult getDoorLocked() throws LuaException
@@ -969,11 +970,11 @@ uaFunctionpublic final MethodResult getFastReturnLocation() throws LuaException
 	}
 
 	@HandlesFunction(
-        description = "",
+        description = "Set the lock state of your tardis doors. Always closes your doors.",
         returns = ""
     )
     @LuaFunction
-	public final MethodResult setDoorLocked(boolean locked) throws LuaException
+	public final MethodResult setDoorLocked(@HandlesParameter(name = "locked") boolean locked) throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
@@ -1007,8 +1008,8 @@ uaFunctionpublic final MethodResult getFastReturnLocation() throws LuaException
 
 	//region Cooldown - getIsOnCooldown, getIsCrashing, getCooldownTicks, getCooldownDuration
 	@HandlesFunction(
-        description = "",
-        returns = ""
+        description = "Whether your tardis is currently in cooldown mode. Happens after crashing your tardis.",
+        returns = "true if on cooldown, else false"
     )
     @LuaFunction
 	public final MethodResult getIsOnCooldown() throws LuaException
@@ -1048,10 +1049,11 @@ uaFunctionpublic final MethodResult getFastReturnLocation() throws LuaException
 
 /*	todo Uncomment on next 1.19 update
 	@HandlesFunction(
-	description = "
-,
-    d= "
-uaFunctionpublic final MethodResult getCooldownTicks() throws LuaException
+        description = "How many ticks it has been since you finished crashing and triggered cooldown sequence.",
+        returns = "total number of ticks since started cooling down."
+    )
+
+	public final MethodResult getCooldownTicks() throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
@@ -1067,10 +1069,10 @@ uaFunctionpublic final MethodResult getCooldownTicks() throws LuaException
 	}
 
 	@HandlesFunction(
-	description = "
-,
-    d= "
-uaFunctionpublic final MethodResult getCooldownDuration() throws LuaException
+        description = "Gets how long is remaining in decimal percentage value till the Tardis has finished cooling down.",
+        returns = "A float percentage between zero and one."
+    )
+    public final MethodResult getCooldownDuration() throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
@@ -1087,8 +1089,8 @@ uaFunctionpublic final MethodResult getCooldownDuration() throws LuaException
 	//endregion
 
 	@HandlesFunction(
-        description = "",
-        returns = ""
+        description = "Gets whether the controls can be used. Typically controls will always be available, unless you have crashed your tardis.",
+        returns = "true if controls can be interacted with, otherwise false."
     )
     @LuaFunction
 	public final MethodResult getCanUseControls() throws LuaException
@@ -1108,8 +1110,8 @@ uaFunctionpublic final MethodResult getCooldownDuration() throws LuaException
 
 	//region AutoLand
 	@HandlesFunction(
-        description = "",
-        returns = ""
+        description = "Gets whether flight should be stabilized. Is only useful mid-flight.",
+        returns = "whether auto land is set"
     )
     @LuaFunction
 	public final MethodResult getIsAutoLandSet() throws LuaException
@@ -1128,7 +1130,7 @@ uaFunctionpublic final MethodResult getCooldownDuration() throws LuaException
 	}
 
 	@HandlesFunction(
-        description = "",
+        description = "Sets whether this flight should be stabilized. Is only useful if set mid-flight.",
         returns = ""
     )
     @LuaFunction
@@ -1155,8 +1157,8 @@ uaFunctionpublic final MethodResult getCooldownDuration() throws LuaException
 
 	//region Exterior Theme - getExteriorTheme/setShellTheme/getShellThemes/getShellPatterns/setShellPattern
 	@HandlesFunction(
-        description = "",
-        returns = ""
+        description = "gets the current exterior shell theme",
+        returns = "the name of the current shell theme"
     )
     @LuaFunction
 	public final MethodResult getExteriorTheme() throws LuaException
@@ -1177,7 +1179,7 @@ uaFunctionpublic final MethodResult getCooldownDuration() throws LuaException
 	}
 
 	@HandlesFunction(
-        description = "",
+        description = "Sets the current shell theme to the given id",
         returns = ""
     )
     @LuaFunction
@@ -1193,7 +1195,7 @@ uaFunctionpublic final MethodResult getCooldownDuration() throws LuaException
 					() -> tardisLevelOperator.setShellTheme(theme)
 			));
 
-			return MethodResult.of(theme.name());
+			return MethodResult.of();
 		}
 		else
 		{
@@ -1202,30 +1204,30 @@ uaFunctionpublic final MethodResult getCooldownDuration() throws LuaException
 	}
 
 	@HandlesFunction(
-        description = "",
-        returns = ""
+        description = "Gets all the shell themes that are available",
+        returns = "an iterable list of shell themes"
     )
     @LuaFunction
 	public final MethodResult getShellThemes() throws LuaException
 	{
-		return MethodResult.of(Arrays.stream(ShellTheme.values()).map(ShellTheme::name).toArray());
+		return MethodResult.of(Arrays.stream(ShellTheme.values()).map(ShellTheme::name).collect(Collectors.toSet()));
 	}
 
 	@HandlesFunction(
-        description = "",
-        returns = ""
+        description = "Gets all the shell pattern ids for the given theme name",
+        returns = "an iterable list of shell pattern ids"
     )
     @LuaFunction
 	public final MethodResult getShellThemePatterns(String themeName) throws LuaException
 	{
 		final ShellTheme theme = ShellTheme.valueOf(themeName);
 		var patterns = ShellPatterns.getPatternsForTheme(theme);
-		var ids = patterns.stream().map(shellPattern -> shellPattern.id().toString()).toArray();
+		var ids = patterns.stream().map(shellPattern -> shellPattern.id().toString()).collect(Collectors.toSet());
 		return MethodResult.of(ids);
 	}
 
 	@HandlesFunction(
-        description = "",
+        description = "Allows you to set a shell pattern, based on a pattern theme",
         returns = ""
     )
     @LuaFunction
@@ -1243,7 +1245,7 @@ uaFunctionpublic final MethodResult getCooldownDuration() throws LuaException
 			tardisLevelOperator.setShellTheme(theme);
 			tardisLevelOperator.getExteriorManager().setShellPattern(pattern);
 
-			return MethodResult.of(theme.name(), pattern.name());
+			return MethodResult.of();
 		}
 		else
 		{
