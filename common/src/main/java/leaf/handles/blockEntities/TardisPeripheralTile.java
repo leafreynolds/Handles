@@ -37,7 +37,10 @@ public class TardisPeripheralTile extends BlockEntity implements IPeripheralTile
 	{
 		super(type, pos, state);
 		getModDependentPeripheral();
-		tiles.add(this);
+		if (this.level instanceof ServerLevel)
+		{
+			tiles.add(this);
+		}
 	}
 
 	public TardisPeripheralTile(BlockPos pos, BlockState state)
@@ -82,14 +85,20 @@ public class TardisPeripheralTile extends BlockEntity implements IPeripheralTile
 	public void setRemoved()
 	{
 		super.setRemoved();
-		tiles.remove(this);
+		if (this.level instanceof ServerLevel)
+		{
+			tiles.remove(this);
+		}
 	}
 
 	@Override
 	public void clearRemoved()
 	{
 		super.clearRemoved();
-		tiles.add(this);
+		if (this.level instanceof ServerLevel)
+		{
+			tiles.add(this);
+		}
 	}
 
 	//region Tardis: Refined event hookups
@@ -135,7 +144,9 @@ public class TardisPeripheralTile extends BlockEntity implements IPeripheralTile
 	{
 		for (var tile : tiles)
 		{
-			final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) tile.getLevel());
+			final Level tileLevel = tile.getLevel();
+			final ServerLevel serverLevel = (ServerLevel) tileLevel;
+			final Optional<TardisLevelOperator> optional = TardisLevelOperator.get(serverLevel);
 			if (optional.isPresent() && optional.get() == tardisLevelOperator)
 			{
 				tile.getModDependentPeripheral().queueEvent("onDoorOpened");
