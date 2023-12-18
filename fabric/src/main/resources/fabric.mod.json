@@ -27,9 +27,9 @@
   "depends": {
     "fabric": "*",
     "minecraft": ">=1.19",
-    "architectury": ">=5.14.84"
+    "architectury": ">=5.14.84",
+    "tardis_refined": "1.0.2"
   },
   "recommends": {
-    "tardis_refined": "1.0.1"
   }
 }

@@ -18,6 +18,7 @@ dependencies {
 	//Just means we have to be careful not to access non-common stuff when in the Handles common module
 	modImplementation "com.github.cc-tweaked:cc-restitched:${project.ccr_version}"
 	modImplementation "maven.modrinth:tardis-refined:${tardis_refined_id}-fabric"
+	modCompileOnly "com.github.cc-tweaked:cc-restitched:${project.ccr_version}"
 
 	//modCompileOnlyApi ("blank:imm_ptl_core:2.3.1")
 	//modCompileOnlyApi ("blank:immersive-portals:2.3.2-mc1.19.2-fabric")
