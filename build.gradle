@@ -16,6 +16,7 @@ plugins {
 
 def build_number = System.env.BUILD_NUMBER ?: 1
 def mod_version_and_build = mod_version + "." + build_number
+ext.mod_version_and_build = mod_version_and_build
 def release_type = System.env.TC_RELEASE_TYPE ?: "alpha"
 
 architectury {
@@ -104,6 +105,7 @@ allprojects {
 			}
 		}
 
+		maven { url 'https://jitpack.io' }
 
 		maven {
 			name = 'Ladysnake Mods'
