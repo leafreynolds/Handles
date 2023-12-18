@@ -11,14 +11,15 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
-import whocraft.tardis_refined.common.tardis.manager.TardisControlManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisFlightEventManager;
+import whocraft.tardis_refined.common.tardis.manager.TardisControlManager;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.util.DimensionUtil;
 import whocraft.tardis_refined.patterns.ShellPatterns;
@@ -109,13 +110,85 @@ public class RefinedPeripheral implements IHandlesPeripheral
 			final TardisLevelOperator tardisLevelOperator = optional.get();
 			final TardisControlManager controlManager = tardisLevelOperator.getControlManager();
 			//auto lands the tardis if stabilized flight is true.
-			return MethodResult.of(controlManager.beginFlight(stabilizedFlight));
+
+			blockEntity.getLevel().getServer().tell(new TickTask(1,
+					() -> controlManager.beginFlight(stabilizedFlight)
+			));
+			return MethodResult.of();
 		}
 		else
 		{
 			throw new LuaException("No Tardis Found");
 		}
 	}
+/* DEV ENVIRONMENT ONLY - because I just can't help myself
+
+	@LuaFunction
+	public final MethodResult crash() throws LuaException
+	{
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
+
+		if (optional.isPresent())
+		{
+			final TardisLevelOperator tardisLevelOperator = optional.get();
+			final TardisControlManager controlManager = tardisLevelOperator.getControlManager();
+			//auto lands the tardis if stabilized flight is true.
+
+			blockEntity.getLevel().getServer().tell(new TickTask(1,
+					controlManager::crash
+			));
+			return MethodResult.of();
+		}
+		else
+		{
+			throw new LuaException("No Tardis Found");
+		}
+	}
+
+	@LuaFunction
+	public final MethodResult endCrash() throws LuaException
+	{
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
+
+		if (optional.isPresent())
+		{
+			final TardisLevelOperator tardisLevelOperator = optional.get();
+			final TardisControlManager controlManager = tardisLevelOperator.getControlManager();
+			//auto lands the tardis if stabilized flight is true.
+
+			blockEntity.getLevel().getServer().tell(new TickTask(1,
+					controlManager::onCrashEnd
+			));
+			return MethodResult.of();
+		}
+		else
+		{
+			throw new LuaException("No Tardis Found");
+		}
+	}
+
+	@LuaFunction
+	public final MethodResult endCooldown() throws LuaException
+	{
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
+
+		if (optional.isPresent())
+		{
+			final TardisLevelOperator tardisLevelOperator = optional.get();
+			final TardisControlManager controlManager = tardisLevelOperator.getControlManager();
+			//auto lands the tardis if stabilized flight is true.
+
+			blockEntity.getLevel().getServer().tell(new TickTask(1,
+					controlManager::endCoolDown
+			));
+			return MethodResult.of();
+		}
+		else
+		{
+			throw new LuaException("No Tardis Found");
+		}
+	}
+*/
 
 	@LuaFunction
 	public final boolean isInFlight() throws LuaException
@@ -338,7 +411,11 @@ public class RefinedPeripheral implements IHandlesPeripheral
 		{
 			final TardisLevelOperator tardisLevelOperator = optional.get();
 			final TardisControlManager controlManager = tardisLevelOperator.getControlManager();
-			return MethodResult.of(controlManager.endFlight());
+
+			blockEntity.getLevel().getServer().tell(new TickTask(1,
+					controlManager::endFlight
+			));
+			return MethodResult.of();
 		}
 		else
 		{
@@ -433,15 +510,11 @@ public class RefinedPeripheral implements IHandlesPeripheral
 							: controlManager.getTargetLocation().getLevel()
 					);
 
-			controlManager.setTargetLocation(targetLocation);
+			blockEntity.getLevel().getServer().tell(new TickTask(1,
+					() -> controlManager.setTargetLocation(targetLocation)
+			));
 
-			return MethodResult.of(
-					targetLocation.getPosition().getX(),
-					targetLocation.getPosition().getY(),
-					targetLocation.getPosition().getZ(),
-					targetLocation.getDirection().toString(),
-					targetLocation.getDimensionKey().location().toString()
-			);
+			return MethodResult.of();
 		}
 		else
 		{
@@ -483,9 +556,12 @@ public class RefinedPeripheral implements IHandlesPeripheral
 			int x = args.getInt(0);
 			int y = args.getInt(1);
 			int z = args.getInt(2);
-			tardisLevelOperator.getControlManager().setTargetPosition(new BlockPos(x, y, z));
 
-			return getTargetPosition();
+			blockEntity.getLevel().getServer().tell(new TickTask(1,
+					() -> tardisLevelOperator.getControlManager().setTargetPosition(new BlockPos(x, y, z))
+			));
+
+			return MethodResult.of();
 		}
 		else
 		{
@@ -531,7 +607,15 @@ public class RefinedPeripheral implements IHandlesPeripheral
 			Direction direction = Direction.byName(dir);
 			if (direction != null)//todo - check only for valid directions, no up or down
 			{
-				tardisLevelOperator.getControlManager().getTargetLocation().setDirection(direction);
+				if (direction == Direction.UP || direction == Direction.DOWN)
+				{
+					throw new LuaException("Invalid Tardis Facing Direction");
+				}
+
+				blockEntity.getLevel().getServer().tell(new TickTask(1,
+						() -> tardisLevelOperator.getControlManager().getTargetLocation().setDirection(direction)
+				));
+
 				return MethodResult.of(dir);
 			}
 			else
@@ -576,9 +660,11 @@ public class RefinedPeripheral implements IHandlesPeripheral
 				throw new LuaException("Dimension not found");
 			}
 
-			tardisLevelOperator.getControlManager().getTargetLocation().setLevel(targetDimension);
+			blockEntity.getLevel().getServer().tell(new TickTask(1,
+					() -> tardisLevelOperator.getControlManager().getTargetLocation().setLevel(targetDimension)
+			));
 
-			return getTargetLocation();
+			return MethodResult.of();
 		}
 		else
 		{
@@ -653,7 +739,7 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	@LuaFunction
 	public final MethodResult getFastReturnLocation() throws LuaException
 	{
-		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
 		{
 			final TardisLevelOperator tardisLevelOperator = optional.get();
@@ -735,8 +821,12 @@ public class RefinedPeripheral implements IHandlesPeripheral
 		if (optional.isPresent())
 		{
 			final TardisLevelOperator tardisLevelOperator = optional.get();
-			tardisLevelOperator.setDoorClosed(closed);
-			return MethodResult.of(tardisLevelOperator.getInternalDoor().isOpen());
+
+			blockEntity.getLevel().getServer().tell(new TickTask(1,
+					() -> tardisLevelOperator.setDoorClosed(closed)
+			));
+
+			return MethodResult.of();
 		}
 		else
 		{
@@ -767,14 +857,19 @@ public class RefinedPeripheral implements IHandlesPeripheral
 		{
 			final TardisLevelOperator tardisLevelOperator = optional.get();
 
-			if (tardisLevelOperator.getInternalDoor() != null)
-			{
-				tardisLevelOperator.getInternalDoor().setLocked(locked);
-			}
-			if (tardisLevelOperator.getExteriorManager() != null)
-			{
-				tardisLevelOperator.getExteriorManager().setLocked(locked);
-			}
+			blockEntity.getLevel().getServer().tell(new TickTask(1,
+					() ->
+					{
+						if (tardisLevelOperator.getInternalDoor() != null)
+						{
+							tardisLevelOperator.getInternalDoor().setLocked(locked);
+						}
+						if (tardisLevelOperator.getExteriorManager() != null)
+						{
+							tardisLevelOperator.getExteriorManager().setLocked(locked);
+						}
+					}
+			));
 
 			tardisLevelOperator.setDoorClosed(true);
 
@@ -824,11 +919,11 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	@LuaFunction
 	public final MethodResult getCooldownTicks() throws LuaException
 	{
-		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
 		{
 			final TardisLevelOperator tardisLevelOperator = optional.get();
-			final TardisPilotingManager controlManager = tardisLevelOperator.getPilotingManager();
+			final TardisControlManager controlManager = tardisLevelOperator.getControlManager();
 			return MethodResult.of(controlManager.getCooldownTicks());
 		}
 		else
@@ -840,11 +935,11 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	@LuaFunction
 	public final MethodResult getCooldownDuration() throws LuaException
 	{
-		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) fezTile.getLevel());
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
 		{
 			final TardisLevelOperator tardisLevelOperator = optional.get();
-			final TardisPilotingManager controlManager = tardisLevelOperator.getPilotingManager();
+			final TardisControlManager controlManager = tardisLevelOperator.getControlManager();
 			return MethodResult.of(controlManager.getCooldownDuration());
 		}
 		else
@@ -895,8 +990,12 @@ public class RefinedPeripheral implements IHandlesPeripheral
 		{
 			final TardisLevelOperator tardisLevelOperator = optional.get();
 			final TardisControlManager controlManager = tardisLevelOperator.getControlManager();
-			controlManager.setAutoLand(autoLand);
-			return MethodResult.of(controlManager.isAutoLandSet());
+
+			blockEntity.getLevel().getServer().tell(new TickTask(1,
+					() -> controlManager.setAutoLand(autoLand)
+			));
+
+			return MethodResult.of();
 		}
 		else
 		{
@@ -932,7 +1031,11 @@ public class RefinedPeripheral implements IHandlesPeripheral
 		{
 			final TardisLevelOperator tardisLevelOperator = optional.get();
 			final ShellTheme theme = ShellTheme.valueOf(shellTheme);
-			tardisLevelOperator.setShellTheme(theme);
+
+			blockEntity.getLevel().getServer().tell(new TickTask(1,
+					() -> tardisLevelOperator.setShellTheme(theme)
+			));
+
 			return MethodResult.of(theme.name());
 		}
 		else
