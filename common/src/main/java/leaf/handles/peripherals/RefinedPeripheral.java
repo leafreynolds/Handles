@@ -1092,7 +1092,10 @@ public class RefinedPeripheral implements IHandlesPeripheral
 		{
 			final TardisLevelOperator tardisLevelOperator = optional.get();
 			final TardisWaypointManager waypointManager = tardisLevelOperator.getTardisWaypointManager();
-			return MethodResult.of(waypointManager.getWaypointMap());
+			final Map<String, TardisNavLocation> waypointMap = waypointManager.getWaypointMap();
+			//The computercraft documentation says we could pass the map directly
+			//but we're working with a custom object map, so maybe todo for looking into IDynamicLuaObject to see if its useful for TardisNavLocation?
+			return MethodResult.of(waypointMap.keySet());
 		}
 		else
 		{
