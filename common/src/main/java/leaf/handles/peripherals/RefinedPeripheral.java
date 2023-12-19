@@ -20,6 +20,7 @@ import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.manager.TardisFlightEventManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
+import whocraft.tardis_refined.common.tardis.manager.TardisWaypointManager;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.util.DimensionUtil;
 import whocraft.tardis_refined.patterns.ShellPatterns;
@@ -359,7 +360,7 @@ public class RefinedPeripheral implements IHandlesPeripheral
 		{
 			final TardisLevelOperator tardisLevelOperator = optional.get();
 			TardisFlightEventManager flightEventManager = tardisLevelOperator.getTardisFlightEventManager();
-			return MethodResult.of(flightEventManager.getControlRequestCooldown());
+			return MethodResult.of(flightEventManager.getCurrentControlRequestCooldown());
 		}
 		else
 		{
@@ -1079,5 +1080,97 @@ public class RefinedPeripheral implements IHandlesPeripheral
 			throw new LuaException("No Tardis Found");
 		}
 	}
+	//endregion
+
+	//region Waypoints
+
+	@LuaFunction
+	public final MethodResult getWaypoints() throws LuaException
+	{
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
+		if (optional.isPresent())
+		{
+			final TardisLevelOperator tardisLevelOperator = optional.get();
+			final TardisWaypointManager waypointManager = tardisLevelOperator.getTardisWaypointManager();
+			return MethodResult.of(waypointManager.getWaypointMap());
+		}
+		else
+		{
+			throw new LuaException("No Tardis Found");
+		}
+	}
+	@LuaFunction
+	public final MethodResult getWaypointByName(String waypointName) throws LuaException
+	{
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
+		if (optional.isPresent())
+		{
+			final TardisLevelOperator tardisLevelOperator = optional.get();
+			final TardisWaypointManager waypointManager = tardisLevelOperator.getTardisWaypointManager();
+			final TardisNavLocation waypoint = waypointManager.getWaypointByName(waypointName);
+			return MethodResult.of(
+					waypoint.getPosition().getX(),
+					waypoint.getPosition().getY(),
+					waypoint.getPosition().getZ(),
+					waypoint.getDirection().toString(),
+					waypoint.getDimensionKey().location().toString()
+			);
+		}
+		else
+		{
+			throw new LuaException("No Tardis Found");
+		}
+	}
+
+	@LuaFunction
+	public final MethodResult addWaypoint(String waypointName, int x, int y, int z, Direction facing, String dimension) throws LuaException
+	{
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
+		if (optional.isPresent())
+		{
+			final TardisLevelOperator tardisLevelOperator = optional.get();
+			final TardisWaypointManager waypointManager = tardisLevelOperator.getTardisWaypointManager();
+
+			blockEntity.getLevel().getServer().tell(new TickTask(1,
+					() ->
+					{
+						final TardisNavLocation tardisNavLocation =
+								new TardisNavLocation(
+										new BlockPos(x,y,z),
+										facing,
+										getServerLevel(tardisLevelOperator, dimension)
+								);
+						waypointManager.addWaypoint(tardisNavLocation, waypointName);
+					}
+			));
+			return MethodResult.of();
+		}
+		else
+		{
+			throw new LuaException("No Tardis Found");
+		}
+	}
+
+	@LuaFunction
+	public final MethodResult deleteWaypoint(String waypointName) throws LuaException
+	{
+		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
+		if (optional.isPresent())
+		{
+			final TardisLevelOperator tardisLevelOperator = optional.get();
+			final TardisWaypointManager waypointManager = tardisLevelOperator.getTardisWaypointManager();
+
+			blockEntity.getLevel().getServer().tell(new TickTask(1,
+					() -> waypointManager.deleteWaypoint(waypointName)
+			));
+			return MethodResult.of();
+		}
+		else
+		{
+			throw new LuaException("No Tardis Found");
+		}
+	}
+
+
 	//endregion
 }
