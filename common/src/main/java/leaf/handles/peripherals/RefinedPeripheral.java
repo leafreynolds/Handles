@@ -1047,7 +1047,7 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	@LuaFunction
 	public final MethodResult getShellThemes() throws LuaException
 	{
-		return MethodResult.of(Arrays.stream(ShellTheme.values()).map(ShellTheme::name).toArray());
+		return MethodResult.of(Arrays.stream(ShellTheme.values()).map(ShellTheme::name).collect(Collectors.toSet()));
 	}
 
 	@LuaFunction
@@ -1055,7 +1055,7 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	{
 		final ShellTheme theme = ShellTheme.valueOf(themeName);
 		var patterns = ShellPatterns.getPatternsForTheme(theme);
-		var ids = patterns.stream().map(shellPattern -> shellPattern.id().toString()).toArray();
+		var ids = patterns.stream().map(shellPattern -> shellPattern.id().toString()).collect(Collectors.toSet());
 		return MethodResult.of(ids);
 	}
 
@@ -1071,10 +1071,17 @@ public class RefinedPeripheral implements IHandlesPeripheral
 			final ShellTheme theme = ShellTheme.valueOf(shellTheme);
 			final var pattern = ShellPatterns.getPatternOrDefault(theme, new ResourceLocation(shellPattern));
 
-			tardisLevelOperator.setShellTheme(theme);
-			tardisLevelOperator.getExteriorManager().setShellPattern(pattern);
+			// needs to be passed back to main thread, so that immersive portals doesn't complain about non
+			// main thread trying to add portal entities to the world.
+			blockEntity.getLevel().getServer().tell(new TickTask(1,
+					() ->
+					{
+						tardisLevelOperator.setShellTheme(theme);
+						tardisLevelOperator.getExteriorManager().setShellPattern(pattern);
+					}
+			));
 
-			return MethodResult.of(theme.name(), pattern.name());
+			return MethodResult.of();
 		}
 		else
 		{
