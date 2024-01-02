@@ -1,6 +1,5 @@
 package leaf.handles.peripherals;
 
-import dan200.computercraft.api.lua.IArguments;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.LuaFunction;
 import dan200.computercraft.api.lua.MethodResult;
@@ -81,8 +80,11 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	// canBeginFlight/beginFlight/isInFlight/getFlightEventActive/getFlightEventControl/getRequiredFlightEvents/getRespondedFlightEvents/
 	// isInDangerZone/areControlEventsComplete/areDangerZoneEventsComplete/getFlightPercent/canEndFlight/endFlight/getIsLanding
 
-
-	@LuaFunction
+	@HandlesFunction(
+        description = "Determines if the Tardis can begin flight.",
+        returns = "A boolean value - true if can begin flight, else false."
+    )
+    @LuaFunction
 	public final boolean canBeginFlight() throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
@@ -100,8 +102,14 @@ public class RefinedPeripheral implements IHandlesPeripheral
 
 	//Auto lands the tardis if stabilized flight is true.
 	//Stabilized flight has no flight events.
-	@LuaFunction
-	public final MethodResult beginFlight(boolean stabilizedFlight) throws LuaException
+	@HandlesFunction(
+        description = "Starts the TARDIS flight.",
+        returns = ""
+    )
+    @LuaFunction
+	public final MethodResult beginFlight(
+        @HandlesParameter(name = "stabilizedFlight") boolean stabilizedFlight
+    ) throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 
@@ -190,7 +198,11 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	}
 */
 
-	@LuaFunction
+	@HandlesFunction(
+        description = "Obtains the flight status of the TARDIS.",
+        returns = "A boolean value indicating if the TARDIS is in flight."
+    )
+    @LuaFunction
 	public final boolean isInFlight() throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
@@ -206,7 +218,11 @@ public class RefinedPeripheral implements IHandlesPeripheral
 		}
 	}
 
-	@LuaFunction
+	@HandlesFunction(
+        description = "During active flight, will tell you whether your tardis is waiting for you to interact with a control.",
+        returns = "A boolean value indicating if the TARDIS has an active flight event."
+    )
+    @LuaFunction
 	public final MethodResult getFlightEventActive() throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
@@ -226,7 +242,11 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	//if the tardis has an active flight event control to press,
 	//will return the id name of that control
 	//else returns null (nil for lua?)
-	@LuaFunction
+	@HandlesFunction(
+        description = "During active flight, if there is a flight event, tells you which control it's waiting for you to interact with.",
+        returns = "A string value, the name id of the control that is waiting for a response."
+    )
+    @LuaFunction
 	public final MethodResult getFlightEventControl() throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
@@ -247,7 +267,11 @@ public class RefinedPeripheral implements IHandlesPeripheral
 		}
 	}
 
-	@LuaFunction
+	@HandlesFunction(
+        description = "The total number of flight events you will need to complete in order to make it safely to your destination.",
+        returns = "An int value - required number of control requests"
+    )
+    @LuaFunction
 	public final MethodResult getRequiredFlightEvents() throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
@@ -264,7 +288,11 @@ public class RefinedPeripheral implements IHandlesPeripheral
 		}
 	}
 
-	@LuaFunction
+	@HandlesFunction(
+        description = "Gets the total number of flight events you have already responded to",
+        returns = "An int value - total control requests already responded to"
+    )
+    @LuaFunction
 	public final MethodResult getRespondedFlightEvents() throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
@@ -281,7 +309,11 @@ public class RefinedPeripheral implements IHandlesPeripheral
 		}
 	}
 
-	@LuaFunction
+	@HandlesFunction(
+        description = "If you have missed too many flight events, you will be in the danger zone. This requires you to complete a series of danger zone requests.",
+        returns = "A boolean value - indicates if the TARDIS is in the danger zone."
+    )
+    @LuaFunction
 	public final MethodResult isInDangerZone() throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
@@ -298,7 +330,11 @@ public class RefinedPeripheral implements IHandlesPeripheral
 		}
 	}
 
-	@LuaFunction
+	@HandlesFunction(
+        description = "Checks whether all the flight events are complete",
+        returns = "A boolean value - true if events are complete, false if not"
+    )
+    @LuaFunction
 	public final MethodResult areControlEventsComplete() throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
@@ -315,7 +351,11 @@ public class RefinedPeripheral implements IHandlesPeripheral
 		}
 	}
 
-	@LuaFunction
+	@HandlesFunction(
+        description = "Checks whether all the Danger Zone events are complete",
+        returns = "A boolean value - true if events are complete, false if not"
+    )
+    @LuaFunction
 	public final MethodResult areDangerZoneEventsComplete() throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
@@ -332,7 +372,11 @@ public class RefinedPeripheral implements IHandlesPeripheral
 		}
 	}
 	/* todo enable function when accessor is available
-	@LuaFunction
+	@HandlesFunction(
+        description = "Checks whether you are still in the combo grace period, the faster you are at finishing the flight events, the better.",
+        returns = "A boolean value - true if still in combo time, false if not"
+    )
+    @LuaFunction
 	public final MethodResult isEventInComboTime() throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
@@ -350,7 +394,11 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	}
 
 	//todo enable function when accessor is available
-	@LuaFunction
+	@HandlesFunction(
+        description = "Get the current remaining ticks of cooldown between two controls.",
+        returns = "A boolean value - true if still in combo time, false if not"
+    )
+    @LuaFunction
 	public final MethodResult getControlRequestCooldown() throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
@@ -359,7 +407,7 @@ public class RefinedPeripheral implements IHandlesPeripheral
 		{
 			final TardisLevelOperator tardisLevelOperator = optional.get();
 			TardisFlightEventManager flightEventManager = tardisLevelOperator.getTardisFlightEventManager();
-			return MethodResult.of(flightEventManager.getControlRequestCooldown());
+			return MethodResult.of(flightEventManager.getCurrentControlRequestCooldown());
 		}
 		else
 		{
@@ -368,7 +416,11 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	}
 */
 
-	@LuaFunction
+	@HandlesFunction(
+        description = "Obtains the flight percentage of the TARDIS.",
+        returns = "A percentage float value between 0 - 1."
+    )
+    @LuaFunction
 	public final float getFlightPercent() throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
@@ -385,7 +437,11 @@ public class RefinedPeripheral implements IHandlesPeripheral
 		}
 	}
 
-	@LuaFunction
+	@HandlesFunction(
+        description = "Determines if the TARDIS can end flight.",
+        returns = "A boolean value indicating if the TARDIS can end flight."
+    )
+    @LuaFunction
 	public final MethodResult canEndFlight() throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
@@ -402,7 +458,11 @@ public class RefinedPeripheral implements IHandlesPeripheral
 		}
 	}
 
-	@LuaFunction
+	@HandlesFunction(
+        description = "Stops the TARDIS flight, but only if the return value of canEndFlight is true",
+        returns = ""
+    )
+    @LuaFunction
 	public final MethodResult endFlight() throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
@@ -423,7 +483,11 @@ public class RefinedPeripheral implements IHandlesPeripheral
 		}
 	}
 
-	@LuaFunction
+	@HandlesFunction(
+        description = "Determines if the TARDIS has begun the landing sequence.",
+        returns = "A boolean value indicating if the TARDIS is landing."
+    )
+    @LuaFunction
 	public final MethodResult getIsLanding() throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
@@ -463,7 +527,11 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	}
 
 	//region Target Location - Get/Set
-	@LuaFunction
+	@HandlesFunction(
+        description = "Gets the target location, multiple values that determine where the Tardis will try go once flight has begun.w",
+        returns = "Returns x, y, z, facingDirection, dimensionID."
+    )
+    @LuaFunction
 	public final MethodResult getTargetLocation() throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
@@ -486,19 +554,31 @@ public class RefinedPeripheral implements IHandlesPeripheral
 		}
 	}
 
+	@HandlesFunction(
+        description = "Sets the target location information. Takes in an x,y,z coordinate, a string of the facing direction, a string of the dimension ID",
+        returns = ""
+    )
 	@LuaFunction
-	public final MethodResult setTargetLocation(IArguments args) throws LuaException
+	public final MethodResult setTargetLocation(
+			@HandlesParameter(name = "x") int x,
+			@HandlesParameter(name = "y") int y,
+			@HandlesParameter(name = "z") int z,
+			@HandlesParameter(name = "directionName") String directionName,
+			@HandlesParameter(name = "dimensionID") String dimensionID
+	) throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
 		{
 			final TardisLevelOperator tardisLevelOperator = optional.get();
+			Direction direction = Direction.byName(directionName);
 
-			int x = args.getInt(0);
-			int y = args.getInt(1);
-			int z = args.getInt(2);
-			Direction direction = Direction.byName(args.getString(3));
-			final ServerLevel targetDimension = getServerLevel(tardisLevelOperator, args.getString(4));
+			if (direction == Direction.UP || direction == Direction.DOWN)
+			{
+				throw new LuaException("Invalid Tardis Facing Direction");
+			}
+
+			final ServerLevel targetDimension = getServerLevel(tardisLevelOperator, dimensionID);
 
 			final TardisControlManager controlManager = tardisLevelOperator.getControlManager();
 			TardisNavLocation targetLocation =
@@ -524,7 +604,11 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	//endregion
 
 	//region Target Position - Get/Set
-	@LuaFunction
+	@HandlesFunction(
+        description = "Gets the target position coordinate.",
+        returns = "X,Y,Z as ints"
+    )
+    @LuaFunction
 	public final MethodResult getTargetPosition() throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
@@ -545,17 +629,21 @@ public class RefinedPeripheral implements IHandlesPeripheral
 		}
 	}
 
-	@LuaFunction
-	public final MethodResult setTargetPosition(IArguments args) throws LuaException
+	@HandlesFunction(
+        description = "Sets the target position coordinate. Takes in an x,y,z coordinate as ints.",
+        returns = ""
+    )
+    @LuaFunction
+	public final MethodResult setTargetPosition(
+			@HandlesParameter(name = "x") int x,
+			@HandlesParameter(name = "y") int y,
+			@HandlesParameter(name = "z") int z
+	) throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
 		{
 			final TardisLevelOperator tardisLevelOperator = optional.get();
-
-			int x = args.getInt(0);
-			int y = args.getInt(1);
-			int z = args.getInt(2);
 
 			blockEntity.getLevel().getServer().tell(new TickTask(1,
 					() -> tardisLevelOperator.getControlManager().setTargetPosition(new BlockPos(x, y, z))
@@ -575,7 +663,11 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	//  "south"
 	//  "west"
 	//  "east"
-	@LuaFunction
+	@HandlesFunction(
+        description = "Gets the target facing direction",
+        returns = ""
+    )
+    @LuaFunction
 	public final MethodResult getTargetDirection() throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
@@ -595,8 +687,14 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	//  "south"
 	//  "west"
 	//  "east"
-	@LuaFunction
-	public final MethodResult setTargetDirection(String dir) throws LuaException
+	@HandlesFunction(
+        description = "Sets the target facing direction. Takes in a string, representing north, east, south or west.",
+        returns = ""
+    )
+    @LuaFunction
+	public final MethodResult setTargetDirection(
+			@HandlesParameter(name = "dir") String dir
+	) throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
@@ -631,7 +729,11 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	//endregion
 
 	//region Target Dimension - Get/Set
-	@LuaFunction
+	@HandlesFunction(
+        description = "Gets the target dimension",
+        returns = "a string - in the format of 'mod:dimension_id'"
+    )
+    @LuaFunction
 	public final MethodResult getTargetDimension() throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
@@ -646,8 +748,14 @@ public class RefinedPeripheral implements IHandlesPeripheral
 		}
 	}
 
-	@LuaFunction
-	public final MethodResult setTargetDimension(String dimensionName) throws LuaException
+	@HandlesFunction(
+        description = "Sets the target dimension, takes in a string - in the format of 'mod:dimension_id'",
+        returns = ""
+    )
+    @LuaFunction
+	public final MethodResult setTargetDimension(
+			@HandlesParameter(name = "dimensionName") String dimensionName
+	) throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
@@ -674,7 +782,11 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	//endregion
 
 	//region LastKnownLocation - (x,y,z,direction,dimension) / Dimension / Direction
-	@LuaFunction
+	@HandlesFunction(
+        description = "Gets the last known exterior shell location",
+        returns = "x,y,z,direction,dimension"
+    )
+    @LuaFunction
 	public final MethodResult getLastKnownLocation() throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
@@ -697,7 +809,11 @@ public class RefinedPeripheral implements IHandlesPeripheral
 		}
 	}
 
-	@LuaFunction
+	@HandlesFunction(
+			description = "Gets the last known exterior dimension",
+			returns = "the dimension id, in the format of 'mod:dimension_name'"
+    )
+    @LuaFunction
 	public final MethodResult getLastKnownDimension() throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
@@ -715,7 +831,11 @@ public class RefinedPeripheral implements IHandlesPeripheral
 		}
 	}
 
-	@LuaFunction
+	@HandlesFunction(
+        description = "Gets the last known exterior facing direction",
+        returns = "the direction facing string id"
+    )
+    @LuaFunction
 	public final MethodResult getLastKnownDirection() throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
@@ -736,7 +856,11 @@ public class RefinedPeripheral implements IHandlesPeripheral
 
 	//region FastReturnLocation - Get
 	/* todo uncomment when available
-	@LuaFunction
+	@HandlesFunction(
+        description = "Gets the fast return location, which is set when starting a flight.",
+        returns = "the x,y,z coordinates of the fast return location"
+    )
+    @LuaFunction
 	public final MethodResult getFastReturnLocation() throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
@@ -767,7 +891,11 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	//endregion
 
 	//region Dimensions - gets list of dimensions that the tardis is allowed to travel to
-	@LuaFunction
+	@HandlesFunction(
+        description = "Gets the whitelisted list of dimensions that a tardis can travel to.",
+        returns = "An iterable list of dimension strings, in the format of 'mod:dimension_name'"
+    )
+    @LuaFunction
 	public final MethodResult getDimensions() throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
@@ -797,7 +925,11 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	//endregion
 
 	//region Doors - getInternalDoorOpen, setDoorClosed, getDoorLocked, setDoorLocked
-	@LuaFunction
+	@HandlesFunction(
+        description = "Gets whether your primary internal door is open or not.",
+        returns = "true if open, false if not."
+    )
+    @LuaFunction
 	public final MethodResult getInternalDoorOpen() throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
@@ -814,8 +946,12 @@ public class RefinedPeripheral implements IHandlesPeripheral
 		}
 	}
 
-	@LuaFunction
-	public final MethodResult setDoorClosed(boolean closed) throws LuaException
+	@HandlesFunction(
+        description = "Sets your doors open/closed state",
+        returns = ""
+    )
+    @LuaFunction
+	public final MethodResult setDoorClosed(@HandlesParameter(name = "closed") boolean closed) throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
@@ -834,7 +970,11 @@ public class RefinedPeripheral implements IHandlesPeripheral
 		}
 	}
 
-	@LuaFunction
+	@HandlesFunction(
+        description = "Gets the current door locked status",
+        returns = "Two values - internal door locked, external door locked"
+    )
+    @LuaFunction
 	public final MethodResult getDoorLocked() throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
@@ -849,8 +989,12 @@ public class RefinedPeripheral implements IHandlesPeripheral
 		}
 	}
 
-	@LuaFunction
-	public final MethodResult setDoorLocked(boolean locked) throws LuaException
+	@HandlesFunction(
+        description = "Set the lock state of your tardis doors. Always closes your doors.",
+        returns = ""
+    )
+    @LuaFunction
+	public final MethodResult setDoorLocked(@HandlesParameter(name = "locked") boolean locked) throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
@@ -883,7 +1027,11 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	//endregion
 
 	//region Cooldown - getIsOnCooldown, getIsCrashing, getCooldownTicks, getCooldownDuration
-	@LuaFunction
+	@HandlesFunction(
+        description = "Whether your tardis is currently in cooldown mode. Happens after crashing your tardis.",
+        returns = "true if on cooldown, else false"
+    )
+    @LuaFunction
 	public final MethodResult getIsOnCooldown() throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
@@ -899,7 +1047,11 @@ public class RefinedPeripheral implements IHandlesPeripheral
 		}
 	}
 
-	@LuaFunction
+	@HandlesFunction(
+        description = "",
+        returns = ""
+    )
+    @LuaFunction
 	public final MethodResult getIsCrashing() throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
@@ -916,7 +1068,11 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	}
 
 /*	todo Uncomment on next 1.19 update
-	@LuaFunction
+	@HandlesFunction(
+        description = "How many ticks it has been since you finished crashing and triggered cooldown sequence.",
+        returns = "total number of ticks since started cooling down."
+    )
+
 	public final MethodResult getCooldownTicks() throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
@@ -932,8 +1088,11 @@ public class RefinedPeripheral implements IHandlesPeripheral
 		}
 	}
 
-	@LuaFunction
-	public final MethodResult getCooldownDuration() throws LuaException
+	@HandlesFunction(
+        description = "Gets how long is remaining in decimal percentage value till the Tardis has finished cooling down.",
+        returns = "A float percentage between zero and one."
+    )
+    public final MethodResult getCooldownDuration() throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
@@ -949,7 +1108,11 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	}*/
 	//endregion
 
-	@LuaFunction
+	@HandlesFunction(
+        description = "Gets whether the controls can be used. Typically controls will always be available, unless you have crashed your tardis.",
+        returns = "true if controls can be interacted with, otherwise false."
+    )
+    @LuaFunction
 	public final MethodResult getCanUseControls() throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
@@ -966,7 +1129,11 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	}
 
 	//region AutoLand
-	@LuaFunction
+	@HandlesFunction(
+        description = "Gets whether flight should be stabilized. Is only useful mid-flight.",
+        returns = "whether auto land is set"
+    )
+    @LuaFunction
 	public final MethodResult getIsAutoLandSet() throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
@@ -982,8 +1149,14 @@ public class RefinedPeripheral implements IHandlesPeripheral
 		}
 	}
 
-	@LuaFunction
-	public final MethodResult setAutoLand(boolean autoLand) throws LuaException
+	@HandlesFunction(
+        description = "Sets whether this flight should be stabilized. Is only useful if set mid-flight.",
+        returns = ""
+    )
+    @LuaFunction
+	public final MethodResult setAutoLand(
+			@HandlesParameter(name = "autoLand") boolean autoLand
+	) throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
@@ -1005,7 +1178,11 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	//endregion
 
 	//region Exterior Theme - getExteriorTheme/setShellTheme/getShellThemes/getShellPatterns/setShellPattern
-	@LuaFunction
+	@HandlesFunction(
+        description = "gets the current exterior shell theme",
+        returns = "the name of the current shell theme"
+    )
+    @LuaFunction
 	public final MethodResult getExteriorTheme() throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
@@ -1023,8 +1200,14 @@ public class RefinedPeripheral implements IHandlesPeripheral
 		}
 	}
 
-	@LuaFunction
-	public final MethodResult setShellTheme(String shellTheme) throws LuaException
+	@HandlesFunction(
+        description = "Sets the current shell theme to the given id",
+        returns = ""
+    )
+    @LuaFunction
+	public final MethodResult setShellTheme(
+			@HandlesParameter(name = "shellTheme") String shellTheme
+	) throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
@@ -1036,7 +1219,7 @@ public class RefinedPeripheral implements IHandlesPeripheral
 					() -> tardisLevelOperator.setShellTheme(theme)
 			));
 
-			return MethodResult.of(theme.name());
+			return MethodResult.of();
 		}
 		else
 		{
@@ -1044,13 +1227,21 @@ public class RefinedPeripheral implements IHandlesPeripheral
 		}
 	}
 
-	@LuaFunction
+	@HandlesFunction(
+        description = "Gets all the shell themes that are available",
+        returns = "an iterable list of shell themes"
+    )
+    @LuaFunction
 	public final MethodResult getShellThemes() throws LuaException
 	{
 		return MethodResult.of(Arrays.stream(ShellTheme.values()).map(ShellTheme::name).collect(Collectors.toSet()));
 	}
 
-	@LuaFunction
+	@HandlesFunction(
+        description = "Gets all the shell pattern ids for the given theme name",
+        returns = "an iterable list of shell pattern ids"
+    )
+    @LuaFunction
 	public final MethodResult getShellThemePatterns(String themeName) throws LuaException
 	{
 		final ShellTheme theme = ShellTheme.valueOf(themeName);
@@ -1059,8 +1250,15 @@ public class RefinedPeripheral implements IHandlesPeripheral
 		return MethodResult.of(ids);
 	}
 
-	@LuaFunction
-	public final MethodResult setShellPattern(String shellTheme, String shellPattern) throws LuaException
+	@HandlesFunction(
+        description = "Allows you to set a shell pattern, based on a pattern theme",
+        returns = ""
+    )
+    @LuaFunction
+	public final MethodResult setShellPattern(
+			@HandlesParameter(name = "shellTheme") String shellTheme,
+	        @HandlesParameter(name = "shellPattern") String shellPattern)
+			throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())

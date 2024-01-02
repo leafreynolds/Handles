@@ -1,6 +1,11 @@
+import leaf.handles.documentation.DocumentationParser
+
 architectury {
 	common(rootProject.enabled_platforms.split(","))
 }
+
+apply plugin: DocumentationParser
+
 
 loom {
 	accessWidenerPath = file("src/main/resources/handles.accesswidener")
@@ -36,4 +41,8 @@ publishing {
 	repositories {
 		// Add repositories to publish to here.
 	}
+}
+
+tasks.named('writeDocumentation') {
+    dependsOn('build')
 }
