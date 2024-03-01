@@ -46,7 +46,7 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	@Override
 	public String getType()
 	{
-		return "fez";
+		return "tardis";
 	}
 
 	@Override
@@ -1269,8 +1269,15 @@ public class RefinedPeripheral implements IHandlesPeripheral
 			final ShellTheme theme = ShellTheme.valueOf(shellTheme);
 			final var pattern = ShellPatterns.getPatternOrDefault(theme, new ResourceLocation(shellPattern));
 
-			tardisLevelOperator.setShellTheme(theme);
-			tardisLevelOperator.getExteriorManager().setShellPattern(pattern);
+			// needs to be passed back to main thread, so that immersive portals doesn't complain about non
+			// main thread trying to add portal entities to the world.
+			blockEntity.getLevel().getServer().tell(new TickTask(1,
+					() ->
+					{
+						tardisLevelOperator.setShellTheme(theme);
+						tardisLevelOperator.getExteriorManager().setShellPattern(pattern);
+					}
+			));
 
 			return MethodResult.of();
 		}
