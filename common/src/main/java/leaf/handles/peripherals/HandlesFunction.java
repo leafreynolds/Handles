@@ -9,6 +9,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface HandlesFunction {
     String description();
+    String example();
     String returns();
 }
 

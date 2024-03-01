@@ -82,7 +82,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 
 	@HandlesFunction(
         description = "Determines if the Tardis can begin flight.",
-        returns = "A boolean value - true if can begin flight, else false."
+        returns = "A boolean value - true if can begin flight, else false.",
+		example = "tardis.canBeginFlight()"
     )
     @LuaFunction
 	public final boolean canBeginFlight() throws LuaException
@@ -104,7 +105,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	//Stabilized flight has no flight events.
 	@HandlesFunction(
         description = "Starts the TARDIS flight.",
-        returns = ""
+        returns = "",
+		example = "tardis.beginFlight(false) -- for activating non stabilized flight"
     )
     @LuaFunction
 	public final MethodResult beginFlight(
@@ -200,7 +202,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 
 	@HandlesFunction(
         description = "Obtains the flight status of the TARDIS.",
-        returns = "A boolean value indicating if the TARDIS is in flight."
+        returns = "A boolean value indicating if the TARDIS is in flight.",
+		example = "tardis.isInFlight()"
     )
     @LuaFunction
 	public final boolean isInFlight() throws LuaException
@@ -220,7 +223,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 
 	@HandlesFunction(
         description = "During active flight, will tell you whether your tardis is waiting for you to interact with a control.",
-        returns = "A boolean value indicating if the TARDIS has an active flight event."
+        returns = "A boolean value indicating if the TARDIS has an active flight event.",
+		example = "tardis.getFlightEventActive()"
     )
     @LuaFunction
 	public final MethodResult getFlightEventActive() throws LuaException
@@ -244,7 +248,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	//else returns null (nil for lua?)
 	@HandlesFunction(
         description = "During active flight, if there is a flight event, tells you which control it's waiting for you to interact with.",
-        returns = "A string value, the name id of the control that is waiting for a response."
+        returns = "A string value, the name id of the control that is waiting for a response.",
+			example = "tardis.getFlightEventControl()"
     )
     @LuaFunction
 	public final MethodResult getFlightEventControl() throws LuaException
@@ -269,7 +274,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 
 	@HandlesFunction(
         description = "The total number of flight events you will need to complete in order to make it safely to your destination.",
-        returns = "An int value - required number of control requests"
+        returns = "An int value - required number of control requests",
+			example = "tardis.getRequiredFlightEvents()"
     )
     @LuaFunction
 	public final MethodResult getRequiredFlightEvents() throws LuaException
@@ -290,7 +296,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 
 	@HandlesFunction(
         description = "Gets the total number of flight events you have already responded to",
-        returns = "An int value - total control requests already responded to"
+        returns = "An int value - total control requests already responded to",
+			example = "tardis.getRespondedFlightEvents()"
     )
     @LuaFunction
 	public final MethodResult getRespondedFlightEvents() throws LuaException
@@ -311,7 +318,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 
 	@HandlesFunction(
         description = "If you have missed too many flight events, you will be in the danger zone. This requires you to complete a series of danger zone requests.",
-        returns = "A boolean value - indicates if the TARDIS is in the danger zone."
+        returns = "A boolean value - indicates if the TARDIS is in the danger zone.",
+			example = "tardis.isInDangerZone()"
     )
     @LuaFunction
 	public final MethodResult isInDangerZone() throws LuaException
@@ -332,7 +340,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 
 	@HandlesFunction(
         description = "Checks whether all the flight events are complete",
-        returns = "A boolean value - true if events are complete, false if not"
+        returns = "A boolean value - true if events are complete, false if not",
+			example = "tardis.areControlEventsComplete()"
     )
     @LuaFunction
 	public final MethodResult areControlEventsComplete() throws LuaException
@@ -353,7 +362,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 
 	@HandlesFunction(
         description = "Checks whether all the Danger Zone events are complete",
-        returns = "A boolean value - true if events are complete, false if not"
+        returns = "A boolean value - true if events are complete, false if not",
+			example = "tardis.areDangerZoneEventsComplete()"
     )
     @LuaFunction
 	public final MethodResult areDangerZoneEventsComplete() throws LuaException
@@ -418,7 +428,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 
 	@HandlesFunction(
         description = "Obtains the flight percentage of the TARDIS.",
-        returns = "A percentage float value between 0 - 1."
+        returns = "A percentage float value between 0 - 1.",
+			example = "tardis.getFlightPercent()"
     )
     @LuaFunction
 	public final float getFlightPercent() throws LuaException
@@ -439,7 +450,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 
 	@HandlesFunction(
         description = "Determines if the TARDIS can end flight.",
-        returns = "A boolean value indicating if the TARDIS can end flight."
+        returns = "A boolean value indicating if the TARDIS can end flight.",
+			example = "tardis.canEndFlight()"
     )
     @LuaFunction
 	public final MethodResult canEndFlight() throws LuaException
@@ -460,7 +472,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 
 	@HandlesFunction(
         description = "Stops the TARDIS flight, but only if the return value of canEndFlight is true",
-        returns = ""
+        returns = "",
+			example = "tardis.endFlight()"
     )
     @LuaFunction
 	public final MethodResult endFlight() throws LuaException
@@ -485,7 +498,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 
 	@HandlesFunction(
         description = "Determines if the TARDIS has begun the landing sequence.",
-        returns = "A boolean value indicating if the TARDIS is landing."
+        returns = "A boolean value indicating if the TARDIS is landing.",
+			example = "tardis.getIsLanding()"
     )
     @LuaFunction
 	public final MethodResult getIsLanding() throws LuaException
@@ -529,7 +543,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	//region Target Location - Get/Set
 	@HandlesFunction(
         description = "Gets the target location, multiple values that determine where the Tardis will try go once flight has begun.w",
-        returns = "Returns x, y, z, facingDirection, dimensionID."
+        returns = "Returns x, y, z, facingDirection, dimensionID.",
+			example = "tardis.getTargetLocation()"
     )
     @LuaFunction
 	public final MethodResult getTargetLocation() throws LuaException
@@ -556,7 +571,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 
 	@HandlesFunction(
         description = "Sets the target location information. Takes in an x,y,z coordinate, a string of the facing direction, a string of the dimension ID",
-        returns = ""
+        returns = "",
+			example = "tardis.setTargetLocation(122,90,-12,\"south\",\"overworld\")"
     )
 	@LuaFunction
 	public final MethodResult setTargetLocation(
@@ -606,7 +622,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	//region Target Position - Get/Set
 	@HandlesFunction(
         description = "Gets the target position coordinate.",
-        returns = "X,Y,Z as ints"
+        returns = "X,Y,Z as ints",
+			example = "tardis.getTargetPosition()"
     )
     @LuaFunction
 	public final MethodResult getTargetPosition() throws LuaException
@@ -631,7 +648,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 
 	@HandlesFunction(
         description = "Sets the target position coordinate. Takes in an x,y,z coordinate as ints.",
-        returns = ""
+        returns = "",
+			example = "tardis.setTargetPosition(122,90,-12)"
     )
     @LuaFunction
 	public final MethodResult setTargetPosition(
@@ -665,7 +683,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	//  "east"
 	@HandlesFunction(
         description = "Gets the target facing direction",
-        returns = ""
+        returns = "Direction, in lower case, ie 'south'",
+			example = "tardis.getTargetDirection()"
     )
     @LuaFunction
 	public final MethodResult getTargetDirection() throws LuaException
@@ -689,7 +708,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	//  "east"
 	@HandlesFunction(
         description = "Sets the target facing direction. Takes in a string, representing north, east, south or west.",
-        returns = ""
+        returns = "direction if able to set, else throws error",
+			example = "tardis.setTargetDirection('west')"
     )
     @LuaFunction
 	public final MethodResult setTargetDirection(
@@ -703,7 +723,7 @@ public class RefinedPeripheral implements IHandlesPeripheral
 			final TardisNavLocation lastKnownLocation = tardisLevelOperator.getExteriorManager().getLastKnownLocation();
 
 			Direction direction = Direction.byName(dir);
-			if (direction != null)//todo - check only for valid directions, no up or down
+			if (direction != null)
 			{
 				if (direction == Direction.UP || direction == Direction.DOWN)
 				{
@@ -718,7 +738,7 @@ public class RefinedPeripheral implements IHandlesPeripheral
 			}
 			else
 			{
-				return MethodResult.of();
+				throw new LuaException("Invalid Tardis Facing Direction");
 			}
 		}
 		else
@@ -731,7 +751,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	//region Target Dimension - Get/Set
 	@HandlesFunction(
         description = "Gets the target dimension",
-        returns = "a string - in the format of 'mod:dimension_id'"
+        returns = "a string - in the format of 'mod:dimension_id'",
+			example = "tardis.getTargetDimension()"
     )
     @LuaFunction
 	public final MethodResult getTargetDimension() throws LuaException
@@ -750,7 +771,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 
 	@HandlesFunction(
         description = "Sets the target dimension, takes in a string - in the format of 'mod:dimension_id'",
-        returns = ""
+        returns = "",
+			example = "tardis.setTargetDimension('overworld')"
     )
     @LuaFunction
 	public final MethodResult setTargetDimension(
@@ -784,7 +806,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	//region LastKnownLocation - (x,y,z,direction,dimension) / Dimension / Direction
 	@HandlesFunction(
         description = "Gets the last known exterior shell location",
-        returns = "x,y,z,direction,dimension"
+        returns = "x,y,z,direction,dimension",
+			example = "tardis.getLastKnownLocation()"
     )
     @LuaFunction
 	public final MethodResult getLastKnownLocation() throws LuaException
@@ -811,7 +834,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 
 	@HandlesFunction(
 			description = "Gets the last known exterior dimension",
-			returns = "the dimension id, in the format of 'mod:dimension_name'"
+			returns = "the dimension id, in the format of 'mod:dimension_name'",
+			example = "tardis.getLastKnownDimension()"
     )
     @LuaFunction
 	public final MethodResult getLastKnownDimension() throws LuaException
@@ -833,7 +857,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 
 	@HandlesFunction(
         description = "Gets the last known exterior facing direction",
-        returns = "the direction facing string id"
+        returns = "the direction facing string id",
+			example = "tardis.getLastKnownDirection()"
     )
     @LuaFunction
 	public final MethodResult getLastKnownDirection() throws LuaException
@@ -893,7 +918,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	//region Dimensions - gets list of dimensions that the tardis is allowed to travel to
 	@HandlesFunction(
         description = "Gets the whitelisted list of dimensions that a tardis can travel to.",
-        returns = "An iterable list of dimension strings, in the format of 'mod:dimension_name'"
+        returns = "An iterable list of dimension strings, in the format of 'mod:dimension_name'",
+			example = "tardis.getDimensions()"
     )
     @LuaFunction
 	public final MethodResult getDimensions() throws LuaException
@@ -927,7 +953,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	//region Doors - getInternalDoorOpen, setDoorClosed, getDoorLocked, setDoorLocked
 	@HandlesFunction(
         description = "Gets whether your primary internal door is open or not.",
-        returns = "true if open, false if not."
+        returns = "true if open, false if not.",
+			example = "tardis.getInternalDoorOpen()"
     )
     @LuaFunction
 	public final MethodResult getInternalDoorOpen() throws LuaException
@@ -948,7 +975,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 
 	@HandlesFunction(
         description = "Sets your doors open/closed state",
-        returns = ""
+        returns = "",
+			example = "tardis.setDoorClosed(true)"
     )
     @LuaFunction
 	public final MethodResult setDoorClosed(@HandlesParameter(name = "closed") boolean closed) throws LuaException
@@ -972,7 +1000,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 
 	@HandlesFunction(
         description = "Gets the current door locked status",
-        returns = "Two values - internal door locked, external door locked"
+        returns = "Two values - internal door locked, external door locked",
+			example = "tardis.getDoorLocked()"
     )
     @LuaFunction
 	public final MethodResult getDoorLocked() throws LuaException
@@ -991,7 +1020,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 
 	@HandlesFunction(
         description = "Set the lock state of your tardis doors. Always closes your doors.",
-        returns = ""
+        returns = "",
+			example = "tardis.setDoorLocked(false)"
     )
     @LuaFunction
 	public final MethodResult setDoorLocked(@HandlesParameter(name = "locked") boolean locked) throws LuaException
@@ -1029,7 +1059,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	//region Cooldown - getIsOnCooldown, getIsCrashing, getCooldownTicks, getCooldownDuration
 	@HandlesFunction(
         description = "Whether your tardis is currently in cooldown mode. Happens after crashing your tardis.",
-        returns = "true if on cooldown, else false"
+        returns = "true if on cooldown, else false",
+			example = "tardis.getIsOnCooldown()"
     )
     @LuaFunction
 	public final MethodResult getIsOnCooldown() throws LuaException
@@ -1048,8 +1079,9 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	}
 
 	@HandlesFunction(
-        description = "",
-        returns = ""
+        description = "Gets whether the tardis is currently in the process of crashing",
+        returns = "true or false depending on crash state",
+			example = "tardis.getIsCrashing()"
     )
     @LuaFunction
 	public final MethodResult getIsCrashing() throws LuaException
@@ -1110,7 +1142,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 
 	@HandlesFunction(
         description = "Gets whether the controls can be used. Typically controls will always be available, unless you have crashed your tardis.",
-        returns = "true if controls can be interacted with, otherwise false."
+        returns = "true if controls can be interacted with, otherwise false.",
+			example = "tardis.getIsCrashing()"
     )
     @LuaFunction
 	public final MethodResult getCanUseControls() throws LuaException
@@ -1131,7 +1164,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	//region AutoLand
 	@HandlesFunction(
         description = "Gets whether flight should be stabilized. Is only useful mid-flight.",
-        returns = "whether auto land is set"
+        returns = "whether auto land is set",
+			example = "tardis.getIsAutoLandSet()"
     )
     @LuaFunction
 	public final MethodResult getIsAutoLandSet() throws LuaException
@@ -1151,7 +1185,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 
 	@HandlesFunction(
         description = "Sets whether this flight should be stabilized. Is only useful if set mid-flight.",
-        returns = ""
+        returns = "",
+			example = "tardis.setAutoLand(false)"
     )
     @LuaFunction
 	public final MethodResult setAutoLand(
@@ -1180,7 +1215,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	//region Exterior Theme - getExteriorTheme/setShellTheme/getShellThemes/getShellPatterns/setShellPattern
 	@HandlesFunction(
         description = "gets the current exterior shell theme",
-        returns = "the name of the current shell theme"
+        returns = "the name of the current shell theme",
+			example = "tardis.getExteriorTheme()"
     )
     @LuaFunction
 	public final MethodResult getExteriorTheme() throws LuaException
@@ -1202,7 +1238,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 
 	@HandlesFunction(
         description = "Sets the current shell theme to the given id",
-        returns = ""
+        returns = "",
+			example = "tardis.setShellTheme('shellThemeName')"
     )
     @LuaFunction
 	public final MethodResult setShellTheme(
@@ -1229,7 +1266,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 
 	@HandlesFunction(
         description = "Gets all the shell themes that are available",
-        returns = "an iterable list of shell themes"
+        returns = "an iterable list of shell themes",
+			example = "tardis.getShellThemes()"
     )
     @LuaFunction
 	public final MethodResult getShellThemes() throws LuaException
@@ -1239,7 +1277,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 
 	@HandlesFunction(
         description = "Gets all the shell pattern ids for the given theme name",
-        returns = "an iterable list of shell pattern ids"
+        returns = "an iterable list of shell pattern ids",
+			example = "tardis.getShellThemePatterns('themeName')"
     )
     @LuaFunction
 	public final MethodResult getShellThemePatterns(String themeName) throws LuaException
@@ -1252,7 +1291,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 
 	@HandlesFunction(
         description = "Allows you to set a shell pattern, based on a pattern theme",
-        returns = ""
+        returns = "",
+			example = "tardis.setShellPattern('shellTheme', 'shellPattern')"
     )
     @LuaFunction
 	public final MethodResult setShellPattern(
