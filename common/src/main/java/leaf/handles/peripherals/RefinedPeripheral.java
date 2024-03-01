@@ -47,7 +47,7 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	@Override
 	public String getType()
 	{
-		return "fez";
+		return "tardis";
 	}
 
 	@Override
