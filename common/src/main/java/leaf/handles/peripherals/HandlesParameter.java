@@ -9,4 +9,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.PARAMETER)
 public @interface HandlesParameter {
     String name();
+    String type();
 }

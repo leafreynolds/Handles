@@ -110,7 +110,7 @@ public class RefinedPeripheral implements IHandlesPeripheral
     )
     @LuaFunction
 	public final MethodResult beginFlight(
-        @HandlesParameter(name = "stabilizedFlight") boolean stabilizedFlight
+        @HandlesParameter(name = "stabilizedFlight", type = "boolean") boolean stabilizedFlight
     ) throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
@@ -576,11 +576,11 @@ public class RefinedPeripheral implements IHandlesPeripheral
     )
 	@LuaFunction
 	public final MethodResult setTargetLocation(
-			@HandlesParameter(name = "x") int x,
-			@HandlesParameter(name = "y") int y,
-			@HandlesParameter(name = "z") int z,
-			@HandlesParameter(name = "directionName") String directionName,
-			@HandlesParameter(name = "dimensionID") String dimensionID
+			@HandlesParameter(name = "x", type = "int") int x,
+			@HandlesParameter(name = "y", type = "int") int y,
+			@HandlesParameter(name = "z", type = "int") int z,
+			@HandlesParameter(name = "directionName", type = "string") String directionName,
+			@HandlesParameter(name = "dimensionID", type = "string") String dimensionID
 	) throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
@@ -653,9 +653,9 @@ public class RefinedPeripheral implements IHandlesPeripheral
     )
     @LuaFunction
 	public final MethodResult setTargetPosition(
-			@HandlesParameter(name = "x") int x,
-			@HandlesParameter(name = "y") int y,
-			@HandlesParameter(name = "z") int z
+			@HandlesParameter(name = "x", type = "int") int x,
+			@HandlesParameter(name = "y", type = "int") int y,
+			@HandlesParameter(name = "z", type = "int") int z
 	) throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
@@ -713,7 +713,7 @@ public class RefinedPeripheral implements IHandlesPeripheral
     )
     @LuaFunction
 	public final MethodResult setTargetDirection(
-			@HandlesParameter(name = "dir") String dir
+			@HandlesParameter(name = "dir", type = "string") String dir
 	) throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
@@ -776,7 +776,7 @@ public class RefinedPeripheral implements IHandlesPeripheral
     )
     @LuaFunction
 	public final MethodResult setTargetDimension(
-			@HandlesParameter(name = "dimensionName") String dimensionName
+			@HandlesParameter(name = "dimensionName", type = "string") String dimensionName
 	) throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
@@ -979,7 +979,7 @@ public class RefinedPeripheral implements IHandlesPeripheral
 			example = "tardis.setDoorClosed(true)"
     )
     @LuaFunction
-	public final MethodResult setDoorClosed(@HandlesParameter(name = "closed") boolean closed) throws LuaException
+	public final MethodResult setDoorClosed(@HandlesParameter(name = "closed", type = "boolean") boolean closed) throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
@@ -1024,7 +1024,7 @@ public class RefinedPeripheral implements IHandlesPeripheral
 			example = "tardis.setDoorLocked(false)"
     )
     @LuaFunction
-	public final MethodResult setDoorLocked(@HandlesParameter(name = "locked") boolean locked) throws LuaException
+	public final MethodResult setDoorLocked(@HandlesParameter(name = "locked", type = "boolean") boolean locked) throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
 		if (optional.isPresent())
@@ -1190,7 +1190,7 @@ public class RefinedPeripheral implements IHandlesPeripheral
     )
     @LuaFunction
 	public final MethodResult setAutoLand(
-			@HandlesParameter(name = "autoLand") boolean autoLand
+			@HandlesParameter(name = "autoLand", type = "boolean") boolean autoLand
 	) throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
@@ -1243,7 +1243,7 @@ public class RefinedPeripheral implements IHandlesPeripheral
     )
     @LuaFunction
 	public final MethodResult setShellTheme(
-			@HandlesParameter(name = "shellTheme") String shellTheme
+			@HandlesParameter(name = "shellTheme", type = "string") String shellTheme
 	) throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
@@ -1296,8 +1296,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
     )
     @LuaFunction
 	public final MethodResult setShellPattern(
-			@HandlesParameter(name = "shellTheme") String shellTheme,
-	        @HandlesParameter(name = "shellPattern") String shellPattern)
+			@HandlesParameter(name = "shellTheme", type = "string") String shellTheme,
+	        @HandlesParameter(name = "shellPattern", type = "string") String shellPattern)
 			throws LuaException
 	{
 		final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) blockEntity.getLevel());
