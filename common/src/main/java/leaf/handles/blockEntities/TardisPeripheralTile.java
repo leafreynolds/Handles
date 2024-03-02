@@ -159,7 +159,7 @@ public class TardisPeripheralTile extends BlockEntity implements IPeripheralTile
 	@HandlesOSEvent(
 			eventName = "onDoorOpened",
 			description = "Triggered when the main tardis door has been opened",
-			example = "if os.pullEvent() == 'onDoorClosed' then"
+			example = "if os.pullEvent() == 'onDoorOpened' then"
 	)
 	public static void onDoorOpened(TardisLevelOperator tardisLevelOperator)
 	{
