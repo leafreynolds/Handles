@@ -249,11 +249,11 @@ if (System.getenv("MODRINTH_API_TOKEN") != null || project.hasProperty('modrinth
 	//Set all the fields for the default modrinth task
 	//These get used by secondary uploads unless overwritten
 	modrinth {
-		if (System.getenv("modrinth_api_token") == null) {
+		if (System.getenv("MODRINTH_API_TOKEN") == null) {
 			//Defaults to modrinth_api_token so we only have to check for a token via gradle properties if there isn't a system property
-			getToken().value((String) project.findProperty("MODRINTH_API_TOKEN"))
+			getToken().value((String) project.findProperty("modrinth_api_token"))
 		} else {
-			token = System.getenv("modrinth_api_token")
+			token = System.getenv("MODRINTH_API_TOKEN")
 		}
 		projectId = "zYnlJN4c"
 		//pass it the mod version and build, so if we don't want to increment version for whatever reason, it wont conflict
@@ -304,6 +304,6 @@ def createSecondaryModrinthUpload(String output, String targetProjectId)
 
 
 tasks.register('publishToModSites') {
-	publishToModSites.dependsOn modrinth
-	publishToModSites.dependsOn curseforge
+	publishToModSites.dependsOn tasks.named("modrinth")
+	publishToModSites.dependsOn tasks.named("curseforge")
 }
