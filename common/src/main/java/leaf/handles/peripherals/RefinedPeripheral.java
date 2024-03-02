@@ -83,7 +83,7 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	@HandlesFunction(
         description = "Determines if the Tardis can begin flight.",
         returns = "A boolean value - true if can begin flight, else false.",
-		example = "tardis.canBeginFlight()"
+		example = "local canBeginFlight = tardis.canBeginFlight()"
     )
     @LuaFunction
 	public final boolean canBeginFlight() throws LuaException
@@ -203,7 +203,7 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	@HandlesFunction(
         description = "Obtains the flight status of the TARDIS.",
         returns = "A boolean value indicating if the TARDIS is in flight.",
-		example = "tardis.isInFlight()"
+		example = "local isInFlight = tardis.isInFlight()"
     )
     @LuaFunction
 	public final boolean isInFlight() throws LuaException
@@ -224,7 +224,7 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	@HandlesFunction(
         description = "During active flight, will tell you whether your tardis is waiting for you to interact with a control.",
         returns = "A boolean value indicating if the TARDIS has an active flight event.",
-		example = "tardis.getFlightEventActive()"
+		example = "local flightEventActive = tardis.getFlightEventActive()"
     )
     @LuaFunction
 	public final MethodResult getFlightEventActive() throws LuaException
@@ -249,7 +249,7 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	@HandlesFunction(
         description = "During active flight, if there is a flight event, tells you which control it's waiting for you to interact with.",
         returns = "A string value, the name id of the control that is waiting for a response.",
-			example = "tardis.getFlightEventControl()"
+			example = "local currentFlightEventControl = tardis.getFlightEventControl()"
     )
     @LuaFunction
 	public final MethodResult getFlightEventControl() throws LuaException
@@ -275,7 +275,7 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	@HandlesFunction(
         description = "The total number of flight events you will need to complete in order to make it safely to your destination.",
         returns = "An int value - required number of control requests",
-			example = "tardis.getRequiredFlightEvents()"
+		example = "local requiredFlightEvents = tardis.getRequiredFlightEvents()"
     )
     @LuaFunction
 	public final MethodResult getRequiredFlightEvents() throws LuaException
@@ -297,7 +297,7 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	@HandlesFunction(
         description = "Gets the total number of flight events you have already responded to",
         returns = "An int value - total control requests already responded to",
-			example = "tardis.getRespondedFlightEvents()"
+		example = "local respondedFlightEvents = tardis.getRespondedFlightEvents()"
     )
     @LuaFunction
 	public final MethodResult getRespondedFlightEvents() throws LuaException
@@ -319,7 +319,7 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	@HandlesFunction(
         description = "If you have missed too many flight events, you will be in the danger zone. This requires you to complete a series of danger zone requests.",
         returns = "A boolean value - indicates if the TARDIS is in the danger zone.",
-			example = "tardis.isInDangerZone()"
+			example = "local isInDangerZone = tardis.isInDangerZone()"
     )
     @LuaFunction
 	public final MethodResult isInDangerZone() throws LuaException
@@ -341,7 +341,7 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	@HandlesFunction(
         description = "Checks whether all the flight events are complete",
         returns = "A boolean value - true if events are complete, false if not",
-			example = "tardis.areControlEventsComplete()"
+			example = "local areControlEventsComplete = tardis.areControlEventsComplete()"
     )
     @LuaFunction
 	public final MethodResult areControlEventsComplete() throws LuaException
@@ -363,7 +363,7 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	@HandlesFunction(
         description = "Checks whether all the Danger Zone events are complete",
         returns = "A boolean value - true if events are complete, false if not",
-			example = "tardis.areDangerZoneEventsComplete()"
+			example = "local areDangerZoneEventsComplete = tardis.areDangerZoneEventsComplete()"
     )
     @LuaFunction
 	public final MethodResult areDangerZoneEventsComplete() throws LuaException
@@ -429,7 +429,7 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	@HandlesFunction(
         description = "Obtains the flight percentage of the TARDIS.",
         returns = "A percentage float value between 0 - 1.",
-			example = "tardis.getFlightPercent()"
+			example = "local flightPercent = tardis.getFlightPercent()"
     )
     @LuaFunction
 	public final float getFlightPercent() throws LuaException
@@ -451,7 +451,7 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	@HandlesFunction(
         description = "Determines if the TARDIS can end flight.",
         returns = "A boolean value indicating if the TARDIS can end flight.",
-			example = "tardis.canEndFlight()"
+		example = "local canEndFlight = tardis.canEndFlight()"
     )
     @LuaFunction
 	public final MethodResult canEndFlight() throws LuaException
@@ -499,7 +499,7 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	@HandlesFunction(
         description = "Determines if the TARDIS has begun the landing sequence.",
         returns = "A boolean value indicating if the TARDIS is landing.",
-			example = "tardis.getIsLanding()"
+			example = "local getIsLanding = tardis.getIsLanding()"
     )
     @LuaFunction
 	public final MethodResult getIsLanding() throws LuaException

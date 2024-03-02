@@ -20,6 +20,7 @@ data class LuaFunction(
     val description: String?,
     val args: Map<String, String>?,
     val returns: String?,
+    val example: String?,
 ) {
     fun toMarkdown(): String {
         val builder = StringBuilder()
@@ -41,6 +42,11 @@ data class LuaFunction(
         if (!returns.isNullOrEmpty()) {
             builder.append("#### Returns\n\n")
             builder.append("$returns\n")
+        }
+
+        if (!example.isNullOrEmpty()) {
+            builder.append("#### Example\n\n")
+            builder.append("$example\n")
         }
 
         return builder.toString()
@@ -79,6 +85,7 @@ open class AnalyserTask : DefaultTask() {
 
                         val description = handlesFunction?.javaClass?.getMethod("description")?.invoke(handlesFunction) as? String ?: ""
                         val returns = handlesFunction?.javaClass?.getMethod("returns")?.invoke(handlesFunction) as? String ?: ""
+                        val example = handlesFunction?.javaClass?.getMethod("example")?.invoke(handlesFunction) as? String ?: ""
 
                         LuaFunction(
                             method.name,
@@ -90,6 +97,7 @@ open class AnalyserTask : DefaultTask() {
                                 parameterName to parameter.type.simpleName
                             },
                             returns,
+                            example
                         )
                     } else null
                 }
