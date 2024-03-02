@@ -18,6 +18,10 @@ loom {
 
 		mixinConfig "handles-common.mixins.json"
 		mixinConfig "handles.mixins.json"
+
+		dataGen {
+			mod "${archives_base_name}"
+		}
 	}
 }
 

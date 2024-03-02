@@ -1,0 +1,22 @@
+{
+  "category": "handles:functions",
+  "icon": "minecraft:writable_book",
+  "name": "Basics",
+  "pages": [
+    {
+      "type": "text",
+      "text": "Handles works via putting a computer into your tardis and then attaching a tardis peripheral next to it. You're then able to write a program. $(br)You can use the following to gain access to handles functions:$(br)tardis = peripheral.find('tardis') or error('No tardis interface', 0)",
+      "title": "Handles (For Dummies)"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "handles:fez",
+      "recipe2": "handles:antenna",
+      "text": "Tardis Peripheral"
+    }
+  ],
+  "priority": true,
+  "read_by_default": false,
+  "secret": false,
+  "sortnum": 0
+}
