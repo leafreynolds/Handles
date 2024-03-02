@@ -46,8 +46,10 @@ data class LuaFunction(
 
         if (!example.isNullOrEmpty()) {
             builder.append("#### Example\n\n")
-            builder.append("$example\n")
+            builder.append("$example\n\n")
         }
+
+        builder.append("---\n\n")
 
         return builder.toString()
     }
@@ -59,6 +61,7 @@ open class AnalyserTask : DefaultTask() {
         const val LUA_FUNCTION_ANNOTATION = "dan200.computercraft.api.lua.LuaFunction"
         const val HANDLES_FUNCTION_ANNOTATION = "leaf.handles.peripherals.HandlesFunction"
         const val HANDLES_PARAMETER_ANNOTATION = "leaf.handles.peripherals.HandlesParameter"
+        const val HANDLES_OS_EVENT_ANNOTATION = "leaf.handles.peripherals.HandlesOSEvent"
     }
 
     @TaskAction
@@ -105,6 +108,8 @@ open class AnalyserTask : DefaultTask() {
         }
 
         val builder = StringBuilder()
+
+        builder.append("## Functions:\n")
 
         functions.forEach { function ->
             builder.append(function.toMarkdown())
