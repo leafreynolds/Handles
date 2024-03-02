@@ -107,7 +107,7 @@ public class TardisPeripheralTile extends BlockEntity implements IPeripheralTile
 	@HandlesOSEvent(
 			eventName = "onTakeOff",
 			description = "Triggered when the tardis is taking off",
-			example = "if os.pullEvent() == 'onTakeOff' then"
+			example = "if os.pullEvent() == 'onTakeOff' then\n  --do stuff\nend"
 	)
 	public static EventResult onTakeOff(TardisLevelOperator tardisLevelOperator, LevelAccessor levelAccessor, BlockPos blockPos)
 	{
@@ -125,7 +125,7 @@ public class TardisPeripheralTile extends BlockEntity implements IPeripheralTile
 	@HandlesOSEvent(
 			eventName = "onTardisEntered",
 			description = "Triggered when the tardis has been entered by a player. Also gives the name of the player.",
-			example = "local event, player = os.pullEvent() \nif event == 'onTardisEntered' then"
+			example = "local event, player = os.pullEvent() \nif event == 'onTardisEntered' then\n  --do stuff\nend"
 	)
 	public static void onTardisEntered(TardisLevelOperator tardisLevelOperator, ExteriorShell exteriorShell, Player player, BlockPos blockPos, Level level, Direction direction)
 	{
@@ -142,7 +142,7 @@ public class TardisPeripheralTile extends BlockEntity implements IPeripheralTile
 	@HandlesOSEvent(
 			eventName = "onDoorClosed",
 			description = "Triggered when the main tardis door has been closed",
-			example = "if os.pullEvent() == 'onDoorClosed' then"
+			example = "if os.pullEvent() == 'onDoorClosed' then\n  --do stuff\nend"
 	)
 	public static void onDoorClosed(TardisLevelOperator tardisLevelOperator)
 	{
@@ -159,7 +159,7 @@ public class TardisPeripheralTile extends BlockEntity implements IPeripheralTile
 	@HandlesOSEvent(
 			eventName = "onDoorOpened",
 			description = "Triggered when the main tardis door has been opened",
-			example = "if os.pullEvent() == 'onDoorOpened' then"
+			example = "if os.pullEvent() == 'onDoorOpened' then\n  --do stuff\nend"
 	)
 	public static void onDoorOpened(TardisLevelOperator tardisLevelOperator)
 	{
@@ -178,7 +178,7 @@ public class TardisPeripheralTile extends BlockEntity implements IPeripheralTile
 	@HandlesOSEvent(
 			eventName = "onShellChanged",
 			description = "Triggered when the shell has been changed. Gives you the name of the shell that's been changed to.",
-			example = "local event, shellTheme = os.pullEvent() \nif event == 'onShellChanged' then print(shellTheme) end"
+			example = "local event, shellTheme = os.pullEvent() \nif event == 'onShellChanged' then \n  print(shellTheme) \nend"
 	)
 	public static void onShellChanged(TardisLevelOperator tardisLevelOperator, ShellTheme shellTheme)
 	{
@@ -195,7 +195,7 @@ public class TardisPeripheralTile extends BlockEntity implements IPeripheralTile
 	@HandlesOSEvent(
 			eventName = "onCrashed",
 			description = "Triggered when the tardis crashes. Returns the x y z co-ords, as well as the facing direction and dimension crashed in.",
-			example = "local event = {os.pullEvent()} \nif event[1] == 'onCrashed' then print(event[2], event[3], event[4], event[5], event[6]) end"
+			example = "local event = {os.pullEvent()} \nif event[1] == 'onCrashed' then \n  print(event[2], event[3], event[4], event[5], event[6]) \nend"
 	)
 	public static void onCrashed(TardisLevelOperator tardisLevelOperator, TardisNavLocation tardisNavLocation)
 	{
