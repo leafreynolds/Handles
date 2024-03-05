@@ -113,7 +113,7 @@ open class AnalyserTask : DefaultTask() {
             builder.append(function.toMarkdown())
         }
 
-        val functionsFile = File(project.projectDir, "docs/FUNCTIONS.md")
+        val functionsFile = File(project.projectDir.parentFile, "docs/FUNCTIONS.md")
         functionsFile.parentFile.mkdirs()
 
         functionsFile.writeText(builder.toString())
@@ -130,7 +130,7 @@ open class AnalyserTask : DefaultTask() {
             builder.append(function.toMarkdown())
         }
 
-        val osEventsFile = File(project.projectDir, "docs/EVENTS.md")
+        val osEventsFile = File(project.projectDir.parentFile, "docs/EVENTS.md")
         osEventsFile.parentFile.mkdirs()
 
         osEventsFile.writeText(builder.toString())
