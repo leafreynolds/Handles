@@ -13,6 +13,20 @@ end
 
 ---
 
+### `onLand`
+
+Triggered when the tardis is landing
+
+#### Example
+
+```lua
+if os.pullEvent() == 'onLand' then
+  --do stuff
+end
+```
+
+---
+
 ### `onTardisEntered`
 
 Triggered when the tardis has been entered by a player. Also gives the name of the player.

@@ -123,6 +123,24 @@ public class TardisPeripheralTile extends BlockEntity implements IPeripheralTile
 	}
 
 	@HandlesOSEvent(
+			eventName = "onLand",
+			description = "Triggered when the tardis is landing",
+			example = "if os.pullEvent() == 'onLand' then\n  --do stuff\nend"
+	)
+	public static EventResult onLand(TardisLevelOperator tardisLevelOperator, LevelAccessor levelAccessor, BlockPos blockPos)
+	{
+		for (var tile : tiles)
+		{
+			final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) tile.getLevel());
+			if (optional.isPresent() && optional.get() == tardisLevelOperator)
+			{
+				tile.getModDependentPeripheral().queueEvent("onLand");
+			}
+		}
+		return EventResult.pass();
+	}
+
+	@HandlesOSEvent(
 			eventName = "onTardisEntered",
 			description = "Triggered when the tardis has been entered by a player. Also gives the name of the player.",
 			example = "local event, player = os.pullEvent() \nif event == 'onTardisEntered' then\n  --do stuff\nend"
