@@ -291,7 +291,7 @@ def createSecondaryModrinthUpload(String output, String targetProjectId)
 				//uploadFile = project(":fabric").remapJar
 				uploadFile = file("${output}/build/libs/handles-${version}-${output}.jar")
 				gameVersions = ["1.19.2"] // Must be an array, even with only one version
-				loaders = ['${output}'] // Self-explanatory.
+				loaders = ["${output}"] // Self-explanatory.
 				//Clear additional upload files as this is a modification of what things are set to from before
 				getAdditionalFiles().empty()
 
