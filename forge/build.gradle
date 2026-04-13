@@ -49,7 +49,7 @@ dependencies {
 	//grab a copy from modrinth, as the T:R dev team has curse set to disable 3rd party sharing
 	modImplementation "maven.modrinth:tardis-refined:${tardis_refined_id}-forge"
 
-	modImplementation("org.squiddev:cc-tweaked-${minecraft_version}:${cct_version}") {
+	modImplementation("cc.tweaked:cc-tweaked-${minecraft_version}-forge:${cct_version}") {
 		transitive = false
 	}
 }

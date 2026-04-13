@@ -9,8 +9,9 @@ import leaf.handles.peripherals.RefinedPeripheral;
 import leaf.handles.registries.BlockEntityRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -19,8 +20,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.api.event.EventResult;
-import whocraft.tardis_refined.common.capability.TardisLevelOperator;
-import whocraft.tardis_refined.common.tardis.ExteriorShell;
+import whocraft.tardis_refined.api.event.ShellChangeSource;
+import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
@@ -64,20 +65,6 @@ public class TardisPeripheralTile extends BlockEntity implements IPeripheralTile
 			{
 				peripheral = new RefinedPeripheral(this);
 			}
-
-			// Todo - The below doesn't work, because level is null.
-			//  Will need a better way of getting mod dependent peripherals
-			//
-			////Tardis Refined compat
-			//if (Platform.isModLoaded("tardis_refined") && this.level.dimension().location().getNamespace() == "tardis_refined")
-			//{
-			//	peripheral = new RefinedPeripheral(this);
-			//}
-			////"New Tardis Mod" compat
-			//else if (Platform.isModLoaded("tardis") && this.level.dimension().location().getNamespace() == "tardis")
-			//{
-			//	//peripheral = new NTMPeripheral(this);
-			//}
 		}
 		return peripheral;
 	}
@@ -103,7 +90,6 @@ public class TardisPeripheralTile extends BlockEntity implements IPeripheralTile
 	}
 
 	//region Tardis: Refined event hookups
-	//todo - move these into a tardis refined specific tile class when that comes relevant
 	@HandlesOSEvent(
 			eventName = "onTakeOff",
 			description = "Triggered when the tardis is taking off",
@@ -127,7 +113,7 @@ public class TardisPeripheralTile extends BlockEntity implements IPeripheralTile
 			description = "Triggered when the tardis is landing",
 			example = "if os.pullEvent() == 'onLand' then\n  --do stuff\nend"
 	)
-	public static EventResult onLand(TardisLevelOperator tardisLevelOperator, LevelAccessor levelAccessor, BlockPos blockPos)
+	public static void onLand(TardisLevelOperator tardisLevelOperator, LevelAccessor levelAccessor, BlockPos blockPos)
 	{
 		for (var tile : tiles)
 		{
@@ -137,22 +123,21 @@ public class TardisPeripheralTile extends BlockEntity implements IPeripheralTile
 				tile.getModDependentPeripheral().queueEvent("onLand");
 			}
 		}
-		return EventResult.pass();
 	}
 
 	@HandlesOSEvent(
 			eventName = "onTardisEntered",
-			description = "Triggered when the tardis has been entered by a player. Also gives the name of the player.",
-			example = "local event, player = os.pullEvent() \nif event == 'onTardisEntered' then\n  --do stuff\nend"
+			description = "Triggered when the tardis has been entered by a living entity. Also gives the name of the entity.",
+			example = "local event, entityName = os.pullEvent() \nif event == 'onTardisEntered' then\n  --do stuff\nend"
 	)
-	public static void onTardisEntered(TardisLevelOperator tardisLevelOperator, ExteriorShell exteriorShell, Player player, BlockPos blockPos, Level level, Direction direction)
+	public static void onTardisEntered(TardisLevelOperator tardisLevelOperator, LivingEntity livingEntity, TardisNavLocation sourceLocation, TardisNavLocation destinationLocation)
 	{
 		for (var tile : tiles)
 		{
 			final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) tile.getLevel());
 			if (optional.isPresent() && optional.get() == tardisLevelOperator)
 			{
-				tile.getModDependentPeripheral().queueEvent("onTardisEntered", player.getName().getString());
+				tile.getModDependentPeripheral().queueEvent("onTardisEntered", livingEntity.getName().getString());
 			}
 		}
 	}
@@ -198,14 +183,14 @@ public class TardisPeripheralTile extends BlockEntity implements IPeripheralTile
 			description = "Triggered when the shell has been changed. Gives you the name of the shell that's been changed to.",
 			example = "local event, shellTheme = os.pullEvent() \nif event == 'onShellChanged' then \n  print(shellTheme) \nend"
 	)
-	public static void onShellChanged(TardisLevelOperator tardisLevelOperator, ShellTheme shellTheme)
+	public static void onShellChanged(TardisLevelOperator tardisLevelOperator, ResourceLocation theme, ShellChangeSource shellChangeSource)
 	{
 		for (var tile : tiles)
 		{
 			final Optional<TardisLevelOperator> optional = TardisLevelOperator.get((ServerLevel) tile.getLevel());
 			if (optional.isPresent() && optional.get() == tardisLevelOperator)
 			{
-				tile.getModDependentPeripheral().queueEvent("onShellChanged", shellTheme.getSerializedName());
+				tile.getModDependentPeripheral().queueEvent("onShellChanged", theme.toString());
 			}
 		}
 	}
