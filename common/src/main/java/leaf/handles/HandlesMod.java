@@ -18,6 +18,7 @@ public class HandlesMod
 		BlockRegistry.BLOCKS.register();
 		//then items
 		ItemRegistry.ITEMS.register();
+		ItemRegistry.TABS.register();
 		BlockEntityRegistry.BLOCK_ENTITIES.register();
 		HandlesModCompat.init();
 

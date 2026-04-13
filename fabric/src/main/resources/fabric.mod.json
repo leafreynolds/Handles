@@ -26,10 +26,10 @@
   ],
   "depends": {
     "fabric": "*",
-    "minecraft": ">=1.19",
-    "architectury": ">=5.14.84"
+    "minecraft": ">=1.20.1",
+    "architectury": ">=9.0.0"
   },
   "recommends": {
-    "tardis_refined": "1.0.1"
+    "tardis_refined": ">=2.0.0"
   }
 }
