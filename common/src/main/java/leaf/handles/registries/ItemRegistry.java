@@ -20,8 +20,13 @@ public class ItemRegistry
 	public static final RegistrySupplier<CreativeModeTab> MAIN_TAB =
 			TABS.register("main_tab", () ->
 					CreativeTabRegistry.create(
-							Component.translatable("itemGroup.handles.main_tab"),
-							() -> new ItemStack(BlockRegistry.FEZ.get())
+							builder -> builder
+									.title(Component.translatable("itemGroup.handles.main_tab"))
+									.icon(() -> new ItemStack(BlockRegistry.FEZ.get()))
+									.displayItems((params, output) -> {
+										output.accept(BlockRegistry.FEZ.get());
+										output.accept(BlockRegistry.ANTENNA.get());
+									})
 					)
 			);
 }

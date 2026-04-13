@@ -9,7 +9,7 @@ import net.darkhax.curseforgegradle.UploadArtifact
 
 plugins {
 	id "architectury-plugin" version "3.4-SNAPSHOT"
-	id "dev.architectury.loom" version "1.3-SNAPSHOT" apply false
+	id "dev.architectury.loom" version "1.4-SNAPSHOT" apply false
 	id 'net.darkhax.curseforgegradle' version '1.0.14'
 	id "com.modrinth.minotaur" version "2.+"
 }
@@ -78,6 +78,7 @@ allprojects {
 		// See https://docs.gradle.org/current/userguide/declaring_repositories.html
 		// for more information about repositories.
 		maven { url "https://squiddev.cc/maven/" }
+		maven { url "https://maven.squiddev.cc/" }
 		maven { url "https://maven.shedaniel.me/" }
 		maven { url "https://maven.blamejared.com/" }
 		maven { url "https://dvs1.progwml6.com/files/maven/" }

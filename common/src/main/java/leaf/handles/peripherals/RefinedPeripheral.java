@@ -409,6 +409,7 @@ public class RefinedPeripheral implements IHandlesPeripheral
 			final TardisPilotingManager pilotingManager = tardisLevelOperator.getPilotingManager();
 
 			blockEntity.getLevel().getServer().tell(new TickTask(1,
+					// endFlight(forceFlightEnd, isCrashing) - normal landing uses false for both
 					() -> pilotingManager.endFlight(false, false)
 			));
 			return MethodResult.of();
@@ -1127,6 +1128,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	//endregion
 
 	//region Exterior Theme - getExteriorTheme/setShellTheme/getShellThemes/getShellPatterns/setShellPattern
+	private static final ResourceLocation PERIPHERAL_SHELL_CHANGE_SOURCE = new ResourceLocation("handles", "peripheral");
+
 	@HandlesFunction(
         description = "gets the current exterior shell theme",
         returns = "the name of the current shell theme",
@@ -1163,10 +1166,14 @@ public class RefinedPeripheral implements IHandlesPeripheral
 		{
 			final TardisLevelOperator tardisLevelOperator = optional.get();
 			final ResourceLocation themeRL = new ResourceLocation(shellTheme);
-			final ResourceLocation currentPatternRL = tardisLevelOperator.getAestheticHandler().shellPattern().id();
+			// Use the first available pattern for the new theme as the default
+			var patterns = ShellPatterns.getPatternsForTheme(themeRL);
+			final ResourceLocation patternRL = (patterns != null && !patterns.isEmpty())
+					? patterns.get(0).id()
+					: tardisLevelOperator.getAestheticHandler().shellPattern().id();
 
 			blockEntity.getLevel().getServer().tell(new TickTask(1,
-					() -> tardisLevelOperator.setShellTheme(themeRL, currentPatternRL, new ShellChangeSource(new ResourceLocation("handles", "peripheral")))
+					() -> tardisLevelOperator.setShellTheme(themeRL, patternRL, new ShellChangeSource(PERIPHERAL_SHELL_CHANGE_SOURCE))
 			));
 
 			return MethodResult.of();
@@ -1232,7 +1239,7 @@ public class RefinedPeripheral implements IHandlesPeripheral
 			// needs to be passed back to main thread, so that immersive portals doesn't complain about non
 			// main thread trying to add portal entities to the world.
 			blockEntity.getLevel().getServer().tell(new TickTask(1,
-					() -> tardisLevelOperator.setShellTheme(themeRL, patternRL, new ShellChangeSource(new ResourceLocation("handles", "peripheral")))
+					() -> tardisLevelOperator.setShellTheme(themeRL, patternRL, new ShellChangeSource(PERIPHERAL_SHELL_CHANGE_SOURCE))
 			));
 
 			return MethodResult.of();
