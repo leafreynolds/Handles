@@ -16,8 +16,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.api.event.ShellChangeSource;
+import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
+import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
+import whocraft.tardis_refined.common.tardis.manager.FlightDanceManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.util.DimensionUtil;
@@ -36,6 +39,69 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	private final BlockEntity blockEntity;
 
 	public List<IComputerAccess> computers = new ArrayList<>();
+
+	/**
+	 * In Tardis Refined 2.x, the "flight event" system was replaced by the "flight dance" system.
+	 * During non-stabilized flight, console controls become misaligned and tick down health.
+	 * If 5 controls die (reach 0 health), the TARDIS crashes.
+	 * This constant mirrors FlightDanceManager's internal crash threshold.
+	 */
+	private static final int DANCE_CRASH_THRESHOLD = 5;
+
+	/**
+	 * Counts dead controls (health == 0) on the current console during a flight dance.
+	 * This is the TR 2.x equivalent of old "missed flight events".
+	 */
+	private int countDeadControls(TardisLevelOperator operator)
+	{
+		GlobalConsoleBlockEntity console = operator.getPilotingManager().getCurrentConsole();
+		if (console == null) return 0;
+		int dead = 0;
+		for (ControlEntity control : console.getControlEntityList())
+		{
+			if (control.getControlHealth() <= 0)
+			{
+				dead++;
+			}
+		}
+		return dead;
+	}
+
+	/**
+	 * Counts controls that are actively ticking down (need player attention) on the current console.
+	 */
+	private int countTickingDownControls(TardisLevelOperator operator)
+	{
+		GlobalConsoleBlockEntity console = operator.getPilotingManager().getCurrentConsole();
+		if (console == null) return 0;
+		int ticking = 0;
+		for (ControlEntity control : console.getControlEntityList())
+		{
+			if (control.isTickingDown() && control.getControlHealth() > 0)
+			{
+				ticking++;
+			}
+		}
+		return ticking;
+	}
+
+	/**
+	 * Gets the first control that is currently ticking down (needs player interaction).
+	 */
+	@Nullable
+	private ControlEntity getFirstTickingDownControl(TardisLevelOperator operator)
+	{
+		GlobalConsoleBlockEntity console = operator.getPilotingManager().getCurrentConsole();
+		if (console == null) return null;
+		for (ControlEntity control : console.getControlEntityList())
+		{
+			if (control.isTickingDown() && control.getControlHealth() > 0)
+			{
+				return control;
+			}
+		}
+		return null;
+	}
 
 	public RefinedPeripheral(BlockEntity blockEntity)
 	{
@@ -176,8 +242,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	}
 
 	@HandlesFunction(
-        description = "During active flight, will tell you whether your tardis is waiting for you to interact with a control. NOTE: Flight events have been removed in Tardis Refined 2.x - this method always returns false.",
-        returns = "A boolean value indicating if the TARDIS has an active flight event.",
+        description = "Checks if the flight dance is active — the TR 2.x equivalent of a flight event. During non-stabilized flight, console controls will misalign and need attention.",
+        returns = "A boolean value indicating if the TARDIS has an active flight dance (controls are ticking down).",
 		example = "local flightEventActive = tardis.getFlightEventActive()"
     )
     @LuaFunction
@@ -187,8 +253,9 @@ public class RefinedPeripheral implements IHandlesPeripheral
 
 		if (optional.isPresent())
 		{
-			// Flight events have been removed in Tardis Refined 2.x
-			return MethodResult.of(false);
+			final TardisLevelOperator tardisLevelOperator = optional.get();
+			FlightDanceManager danceManager = tardisLevelOperator.getFlightDanceManager();
+			return MethodResult.of(danceManager.isDancing() && countTickingDownControls(tardisLevelOperator) > 0);
 		}
 		else
 		{
@@ -200,8 +267,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	//will return the id name of that control
 	//else returns null (nil for lua?)
 	@HandlesFunction(
-        description = "During active flight, if there is a flight event, tells you which control it's waiting for you to interact with. NOTE: Flight events have been removed in Tardis Refined 2.x - this method always returns nil.",
-        returns = "A string value, the name id of the control that is waiting for a response.",
+        description = "During active flight dance, returns the translation key of the control that is currently ticking down and needs interaction. Returns nil if no control needs attention.",
+        returns = "A string value, the translation key of the control that needs attention, or nil.",
 			example = "local currentFlightEventControl = tardis.getFlightEventControl()"
     )
     @LuaFunction
@@ -211,7 +278,12 @@ public class RefinedPeripheral implements IHandlesPeripheral
 
 		if (optional.isPresent())
 		{
-			// Flight events have been removed in Tardis Refined 2.x
+			final TardisLevelOperator tardisLevelOperator = optional.get();
+			ControlEntity tickingControl = getFirstTickingDownControl(tardisLevelOperator);
+			if (tickingControl != null && tickingControl.controlSpecification() != null)
+			{
+				return MethodResult.of(tickingControl.controlSpecification().control().getTranslationKey());
+			}
 			return MethodResult.of((Object) null);
 		}
 		else
@@ -221,8 +293,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	}
 
 	@HandlesFunction(
-        description = "The total number of flight events you will need to complete in order to make it safely to your destination. NOTE: Flight events have been removed in Tardis Refined 2.x - this method always returns 0.",
-        returns = "An int value - required number of control requests",
+        description = "The maximum number of controls that can die before the TARDIS crashes. In Tardis Refined 2.x this is the flight dance crash threshold (5).",
+        returns = "An int value - the crash threshold for dead controls",
 		example = "local requiredFlightEvents = tardis.getRequiredFlightEvents()"
     )
     @LuaFunction
@@ -232,8 +304,7 @@ public class RefinedPeripheral implements IHandlesPeripheral
 
 		if (optional.isPresent())
 		{
-			// Flight events have been removed in Tardis Refined 2.x
-			return MethodResult.of(0);
+			return MethodResult.of(DANCE_CRASH_THRESHOLD);
 		}
 		else
 		{
@@ -242,8 +313,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	}
 
 	@HandlesFunction(
-        description = "Gets the total number of flight events you have already responded to. NOTE: Flight events have been removed in Tardis Refined 2.x - this method always returns 0.",
-        returns = "An int value - total control requests already responded to",
+        description = "Gets the number of console controls that have died (reached 0 health) during the current flight dance. These are controls the player failed to realign in time.",
+        returns = "An int value - total dead controls (missed flight dance interactions)",
 		example = "local respondedFlightEvents = tardis.getRespondedFlightEvents()"
     )
     @LuaFunction
@@ -253,8 +324,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 
 		if (optional.isPresent())
 		{
-			// Flight events have been removed in Tardis Refined 2.x
-			return MethodResult.of(0);
+			final TardisLevelOperator tardisLevelOperator = optional.get();
+			return MethodResult.of(countDeadControls(tardisLevelOperator));
 		}
 		else
 		{
@@ -263,8 +334,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	}
 
 	@HandlesFunction(
-        description = "If you have missed too many flight events, you will be in the danger zone. NOTE: Flight events have been removed in Tardis Refined 2.x - this method always returns false.",
-        returns = "A boolean value - indicates if the TARDIS is in the danger zone.",
+        description = "Returns true if 3 or more console controls have died during the flight dance, meaning the TARDIS is close to crashing (crashes at 5 dead controls).",
+        returns = "A boolean value - indicates if the TARDIS is approaching a crash due to too many dead controls.",
 			example = "local isInDangerZone = tardis.isInDangerZone()"
     )
     @LuaFunction
@@ -274,8 +345,14 @@ public class RefinedPeripheral implements IHandlesPeripheral
 
 		if (optional.isPresent())
 		{
-			// Flight events have been removed in Tardis Refined 2.x
-			return MethodResult.of(false);
+			final TardisLevelOperator tardisLevelOperator = optional.get();
+			FlightDanceManager danceManager = tardisLevelOperator.getFlightDanceManager();
+			if (!danceManager.isDancing())
+			{
+				return MethodResult.of(false);
+			}
+			// Consider danger zone when 3+ controls are dead (out of 5 max before crash)
+			return MethodResult.of(countDeadControls(tardisLevelOperator) >= 3);
 		}
 		else
 		{
@@ -284,8 +361,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	}
 
 	@HandlesFunction(
-        description = "Checks whether all the flight events are complete. NOTE: Flight events have been removed in Tardis Refined 2.x - this method always returns true.",
-        returns = "A boolean value - true if events are complete, false if not",
+        description = "Checks whether the flight dance is no longer active. The dance ends when the flight distance is fully covered or when the TARDIS crashes.",
+        returns = "A boolean value - true if flight dance is complete or not active, false if still dancing",
 			example = "local areControlEventsComplete = tardis.areControlEventsComplete()"
     )
     @LuaFunction
@@ -295,8 +372,9 @@ public class RefinedPeripheral implements IHandlesPeripheral
 
 		if (optional.isPresent())
 		{
-			// Flight events have been removed in Tardis Refined 2.x
-			return MethodResult.of(true);
+			final TardisLevelOperator tardisLevelOperator = optional.get();
+			FlightDanceManager danceManager = tardisLevelOperator.getFlightDanceManager();
+			return MethodResult.of(!danceManager.isDancing());
 		}
 		else
 		{
@@ -305,8 +383,8 @@ public class RefinedPeripheral implements IHandlesPeripheral
 	}
 
 	@HandlesFunction(
-        description = "Checks whether all the Danger Zone events are complete. NOTE: Flight events have been removed in Tardis Refined 2.x - this method always returns true.",
-        returns = "A boolean value - true if events are complete, false if not",
+        description = "Checks whether the danger zone phase is resolved. In TR 2.x, this returns true when the flight dance is no longer active or when there are fewer than 3 dead controls.",
+        returns = "A boolean value - true if no longer in danger zone, false if still in danger",
 			example = "local areDangerZoneEventsComplete = tardis.areDangerZoneEventsComplete()"
     )
     @LuaFunction
@@ -316,8 +394,13 @@ public class RefinedPeripheral implements IHandlesPeripheral
 
 		if (optional.isPresent())
 		{
-			// Flight events have been removed in Tardis Refined 2.x
-			return MethodResult.of(true);
+			final TardisLevelOperator tardisLevelOperator = optional.get();
+			FlightDanceManager danceManager = tardisLevelOperator.getFlightDanceManager();
+			if (!danceManager.isDancing())
+			{
+				return MethodResult.of(true);
+			}
+			return MethodResult.of(countDeadControls(tardisLevelOperator) < 3);
 		}
 		else
 		{
@@ -332,7 +415,7 @@ public class RefinedPeripheral implements IHandlesPeripheral
     @LuaFunction
 	public final MethodResult isEventInComboTime() throws LuaException
 	{
-		// Flight events have been removed in Tardis Refined 2.x
+		// TR 2.x flight dance does not have a combo time mechanic
 		return MethodResult.of(false);
 	}
 
@@ -344,7 +427,7 @@ public class RefinedPeripheral implements IHandlesPeripheral
     @LuaFunction
 	public final MethodResult getControlRequestCooldown() throws LuaException
 	{
-		// Flight events have been removed in Tardis Refined 2.x
+		// TR 2.x flight dance does not have a control request cooldown mechanic
 		return MethodResult.of(0);
 	}
 */
