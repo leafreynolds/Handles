@@ -209,7 +209,7 @@ public class RefinedPeripheral implements IHandlesPeripheral
 			final TardisPilotingManager pilotingManager = tardisLevelOperator.getPilotingManager();
 
 			blockEntity.getLevel().getServer().tell(new TickTask(1,
-					() -> pilotingManager.endFlight(true, true)
+					pilotingManager::crash
 			));
 			return MethodResult.of();
 		}
@@ -901,8 +901,19 @@ public class RefinedPeripheral implements IHandlesPeripheral
 			final TardisLevelOperator tardisLevelOperator = optional.get();
 			final TardisPilotingManager pilotingManager = tardisLevelOperator.getPilotingManager();
 
-			// Fast return not available in Tardis Refined 2.x
-			return MethodResult.of();
+			final TardisNavLocation fastReturnLocation = pilotingManager.getFastReturnLocation();
+			if (fastReturnLocation != null)
+			{
+				return MethodResult.of(
+						fastReturnLocation.getPosition().getX(),
+						fastReturnLocation.getPosition().getY(),
+						fastReturnLocation.getPosition().getZ()
+				);
+			}
+			else
+			{
+				return MethodResult.of();
+			}
 		}
 		else
 		{
@@ -1108,8 +1119,7 @@ public class RefinedPeripheral implements IHandlesPeripheral
 		{
 			final TardisLevelOperator tardisLevelOperator = optional.get();
 			final TardisPilotingManager pilotingManager = tardisLevelOperator.getPilotingManager();
-			// Cooldown ticks not available in Tardis Refined 2.x
-			return MethodResult.of(0);
+			return MethodResult.of(pilotingManager.getCrashRecoveryTicks());
 		}
 		else
 		{
@@ -1128,8 +1138,7 @@ public class RefinedPeripheral implements IHandlesPeripheral
 		{
 			final TardisLevelOperator tardisLevelOperator = optional.get();
 			final TardisPilotingManager pilotingManager = tardisLevelOperator.getPilotingManager();
-			// Cooldown duration not available in Tardis Refined 2.x
-			return MethodResult.of(0.0f);
+			return MethodResult.of(pilotingManager.getCooldownDuration());
 		}
 		else
 		{
